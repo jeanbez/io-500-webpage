@@ -4,12 +4,15 @@
 
 <div class="content">
     <p class="call">
-        Submissions are now open for ISC23.
+        Submissions are now closed for ISC23!
     </p>
+
+    <!--
     <p class="call">
         Stabilization Period: Monday, April 3rd - Friday, April 14th, 2023
         Submission Deadline: Tuesday, May 16th, 2023 AoE
     </p>
+    -->
 
     <h2>Call for Submissions</h2>
 
