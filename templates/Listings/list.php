@@ -1,17 +1,17 @@
-<?php $this->assign('title', strtoupper($this->request->getParam('pass')[0]) . ' - ' . $type->name . ' List'); ?>
+<?php $this->assign('title', strtoupper($release->acronym) . ' - ' . $type->name . ' List'); ?>
 
 <?php echo $this->element('call'); ?>
 
 <div class="submissions index content">
     <div class="submissions-header">
-        <h2><?php echo $type->name . ' ' . strtoupper($this->request->getParam('pass')[0]); ?> List</h2>
+        <h2><?php echo $type->name . ' ' . strtoupper($release->acronym); ?> List</h2>
 
         <div class="submissions-action">
             <?php
             echo $this->Html->link(_('Customize'), [
                 'controller' => 'submissions',
                 'action' => 'customize',
-                strtolower($this->request->getParam('pass')[0]),
+                strtolower($release->acronym),
                 strtolower($type->url)
             ], [
                 'class' => 'button'
@@ -20,7 +20,7 @@
             echo $this->Html->link('Download', [
                 'controller' => 'listings',
                 'action' => 'download',
-                strtolower($this->request->getParam('pass')[0]),
+                strtolower($release->acronym),
                 strtolower($type->url),
                 '?' => $this->request->getQueryParams()
             ], [
@@ -46,7 +46,7 @@
             echo $this->Html->link($icon . '<b>' . $list->type->name . '</b>', [
                 'controller' => 'listings',
                 'action' => 'list',
-                strtolower($this->request->getParam('pass')[0]),
+                strtolower($release->acronym),
                 strtolower($list->type->url)
             ], [
                 'class' => 'tab' . $state,
