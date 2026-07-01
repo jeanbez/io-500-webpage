@@ -67,8 +67,6 @@ $routes->scope('/', function (RouteBuilder $builder) {
         [
             'controller' => 'Listings',
             'action' => 'list',
-            'sc25',
-            'production',
         ]
     );
     $builder->connect(
@@ -229,6 +227,14 @@ $routes->scope('/', function (RouteBuilder $builder) {
         [
             'controller' => 'Listings',
             'action' => 'download',
+        ]
+    );
+
+    $builder->connect(
+        '/plots/data.json',
+        [
+            'controller' => 'Listings',
+            'action' => 'plotsData',
         ]
     );
 
