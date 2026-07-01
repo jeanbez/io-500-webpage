@@ -1,15 +1,5 @@
 <?php $this->assign('title', 'Releases'); ?>
 
-<nav id="breadcrumb">
-    <p>YOU ARE HERE</p>
-
-    <?php
-    $this->Breadcrumbs->add(_('RELEASES'), ['controller' => 'releases', 'action' => 'index']);
-
-    echo $this->Breadcrumbs->render([], ['separator' => ' / ']);
-    ?>
-</nav>
-
 <div class="landing landing-lists">
     <h1><?php echo __('IO500 Lists') ?></h1>
 

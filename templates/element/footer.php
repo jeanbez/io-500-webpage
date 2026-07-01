@@ -10,11 +10,13 @@
                 <li>
                     <?php
                     echo $this->Html->link(
-                        file_get_contents('img/report.svg'),
+                        '<i class="fa-brands fa-github"></i>',
                         'https://github.com/IO500/webpage/issues/new',
                         [
                             'escape' => false,
-                            'target' => '_blank'
+                            'target' => '_blank',
+                            'title' => __('Report an issue'),
+                            'aria-label' => __('Report an issue on GitHub')
                         ]
                     );
                     ?>
@@ -22,11 +24,13 @@
                 <li>
                     <?php
                     echo $this->Html->link(
-                        file_get_contents('img/mail.svg'),
+                        '<i class="fa-solid fa-envelope"></i>',
                         'http://lists.io500.org/listinfo.cgi/io500-io500.org',
                         [
                             'escape' => false,
-                            'target' => '_blank'
+                            'target' => '_blank',
+                            'title' => __('Mailing list'),
+                            'aria-label' => __('IO500 mailing list')
                         ]
                     );
                     ?>
@@ -34,11 +38,13 @@
                 <li>
                     <?php
                     echo $this->Html->link(
-                        file_get_contents('img/slack.svg'),
+                        '<i class="fa-brands fa-slack"></i>',
                         'https://join.slack.com/t/io500workspace/shared_invite/zt-hv1i5svr-Yj8HR_wRzEy1bK2s2JX20w',
                         [
                             'escape' => false,
-                            'target' => '_blank'
+                            'target' => '_blank',
+                            'title' => __('Slack'),
+                            'aria-label' => __('Join us on Slack')
                         ]
                     );
                     ?>

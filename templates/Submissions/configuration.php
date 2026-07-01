@@ -1,16 +1,3 @@
-<nav id="breadcrumb">
-    <p>YOU ARE HERE</p>
-
-    <?php
-    $this->Breadcrumbs->add(_('LISTS'), ['controller' => 'releases', 'action' => 'index']);
-    $this->Breadcrumbs->add(strtoupper($submission->release->acronym), ['controller' => 'listings', 'action' => 'list', strtolower($submission->release->acronym), 'io500']);
-    $this->Breadcrumbs->add(strtoupper($submission->information_system), ['controller' => 'submissions', 'action' => 'view', $submission->id]);
-    $this->Breadcrumbs->add(_('CONFIGURATION'), ['controller' => 'submissions', 'action' => 'configuration', $submission->id]);
-
-    echo $this->Breadcrumbs->render([], ['separator' => ' / ']);
-    ?>
-</nav>
-
 <div class="row">
     <div class="column-responsive column-80">
         <div class="submissions view content">
@@ -94,7 +81,6 @@
         </div>
     </div>
 </div>
-
 
 <?php
 echo $this->Html->css([
