@@ -5,7 +5,7 @@
         Explore some of the <strong>IO500</strong> plots that we use in our list analysis sessions!<br>
     </p>
 
-    <ul>
+    <ul class="button-group">
         <li>
             <?php
             echo $this->Html->link(__('IOR Graphs'), [

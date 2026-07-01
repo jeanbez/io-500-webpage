@@ -263,6 +263,24 @@ input[type=submit]:focus-visible {
     color: #fff;
 }
 
+/* Tidy row of equal-width buttons (e.g. landing-page navigation) */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+    margin: 30px 0;
+    padding: 0;
+}
+
+ul.button-group li {
+    padding: 0;
+}
+
+.button-group .button {
+    min-width: 140px;
+}
+
 nav {
     margin: 40px 0 0;
 }
@@ -1002,7 +1020,6 @@ dd {
 }
 
 .plot-controls button {
-    background: transparent;
     cursor: pointer;
     flex-grow: 0;
     font-family: inherit;
