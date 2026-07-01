@@ -5,7 +5,9 @@
             echo $this->Html->link(
                 '', '/',
                 [
-                    'escape' => false
+                    'escape' => false,
+                    'title' => 'IO500',
+                    'aria-label' => 'IO500 — Home'
                 ]
             );
             ?>
