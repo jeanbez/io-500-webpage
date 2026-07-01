@@ -88,7 +88,7 @@ class RecordsController extends AppController
             ->first();
 
         // We need to load the Submissions model to be able to fetch that table
-        $this->loadModel('Submissions');
+        $this->Submissions = $this->fetchTable('Submissions');
 
         $db = ConnectionManager::get('default');
 
