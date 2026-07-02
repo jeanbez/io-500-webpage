@@ -41,11 +41,7 @@ class SubmissionsController extends AppController
      */
     public function view($id = null)
     {
-        $submission = $this->Submissions->get($id, [
-            'contain' => [
-                'Releases',
-            ],
-        ]);
+        $submission = $this->Submissions->get($id, contain: ['Releases']);
 
         // We need to fetch the scores
         $score = $this->Submissions->ListingsSubmissions->find('all')
@@ -58,7 +54,7 @@ class SubmissionsController extends AppController
                 'ListingsSubmissions.submission_id' => $submission->id,
                 'Releases.release_date <=' => date('Y-m-d'),
             ])
-            ->order([
+            ->orderBy([
                 'ListingsSubmissions.score' => 'DESC',
                 'Listings.type_id' => 'DESC',
                 'Releases.release_date' => 'DESC',
@@ -92,11 +88,7 @@ class SubmissionsController extends AppController
      */
     public function configuration($id = null)
     {
-        $submission = $this->Submissions->get($id, [
-            'contain' => [
-                'Releases',
-            ],
-        ]);
+        $submission = $this->Submissions->get($id, contain: ['Releases']);
 
         $questionnaire = $this->Submissions->Questionnaires->find('all')
             ->where([
@@ -210,7 +202,7 @@ class SubmissionsController extends AppController
             ->where([
                 'ListingsSubmissions.listing_id' => $listing->id,
             ])
-            ->order([
+            ->orderBy([
                 'ListingsSubmissions.score' => 'DESC',
             ])
             ->limit($limit);
