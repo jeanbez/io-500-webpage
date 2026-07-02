@@ -143,7 +143,7 @@ class RecordsController extends AppController
             ->where([
                 'ListingsSubmissions.listing_id' => $listing->id,
             ])
-            ->order([
+            ->orderBy([
                 'ListingsSubmissions.score' => 'DESC',
             ])
             ->limit($limit);

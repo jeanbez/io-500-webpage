@@ -20,12 +20,7 @@ class QuestionnairesController extends AppController
      */
     public function view($submission_id = null)
     {
-        $submission = $this->Questionnaires->Submissions->get($submission_id, [
-            'contain' => [
-                'Releases',
-                'Questionnaires',
-            ],
-        ]);
+        $submission = $this->Questionnaires->Submissions->get($submission_id, contain: ['Releases', 'Questionnaires']);
 
         if (!$submission->questionnaire) {
             $this->Flash->error(__('This submission does not have a reproducibility questionnaire.'));

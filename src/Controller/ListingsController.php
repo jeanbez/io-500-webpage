@@ -40,7 +40,7 @@ class ListingsController extends AppController
                     'Types.url' => $url,
                     'Releases.release_date <=' => date('Y-m-d'),
                 ])
-                ->order(['Releases.release_date' => 'DESC'])
+                ->orderBy(['Releases.release_date' => 'DESC'])
                 ->first();
             if ($latest === null) {
                 throw new \Cake\Http\Exception\NotFoundException(
@@ -131,7 +131,7 @@ class ListingsController extends AppController
                 'Types.url' => 'io500',
                 'Releases.release_date <=' => date('Y-m-d'),
             ])
-            ->order([
+            ->orderBy([
                 'Releases.release_date' => 'ASC',
                 'ListingsSubmissions.score' => 'DESC',
             ])
@@ -224,7 +224,7 @@ class ListingsController extends AppController
                 ->where([
                     'Releases.release_date <=' => date('Y-m-d'),
                 ])
-                ->order([
+                ->orderBy([
                     'Releases.release_date' => 'DESC',
                 ])
                 ->first();
@@ -259,7 +259,7 @@ class ListingsController extends AppController
                 'Releases.release_date <=' => date('Y-m-d'),
                 'Releases.acronym' => strtoupper($bof),
             ])
-            ->order([
+            ->orderBy([
                 'Releases.release_date' => 'DESC',
             ])
             ->first();
@@ -277,7 +277,7 @@ class ListingsController extends AppController
             ->where([
                 'ListingsSubmissions.listing_id' => $listing->id,
             ])
-            ->order([
+            ->orderBy([
                 'ListingsSubmissions.score' => 'DESC',
             ]);
 
