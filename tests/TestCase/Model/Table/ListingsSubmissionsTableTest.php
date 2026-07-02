@@ -23,7 +23,7 @@ class ListingsSubmissionsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'app.ListingsSubmissions',
         'app.Listings',
         'app.Submissions',
