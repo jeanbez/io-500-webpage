@@ -14,11 +14,11 @@ class QuestionnairesController extends AppController
     /**
      * View method
      *
-     * @param null $submission_id Questionnaire id.
+     * @param string|null $submission_id Questionnaire id.
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($submission_id = null)
+    public function view(?string $submission_id = null)
     {
         $submission = $this->Questionnaires->Submissions->get($submission_id, contain: ['Releases', 'Questionnaires']);
 

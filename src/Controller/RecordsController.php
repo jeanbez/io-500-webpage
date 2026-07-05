@@ -77,7 +77,7 @@ class RecordsController extends AppController
      * @param string|null $hash Record hash.
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function list($hash = null)
+    public function list(?string $hash = null)
     {
         $limit = 1000;
 
@@ -109,18 +109,6 @@ class RecordsController extends AppController
 
         // This column can be used to compute custom metrics, but it will take the initial value from the last historical list
         array_splice($columns, 8, 0, ['io500_score']);
-
-        $release = $this->Submissions->Releases->find('all')
-            ->contain([
-                'Listings' => [
-                    'Types',
-                ],
-            ])
-            ->where([
-                'Releases.release_date <=' => date('Y-m-d'),
-                'Releases.acronym' => strtoupper($display['custom-release']),
-            ])
-            ->first();
 
         $listing = $this->Submissions->ListingsSubmissions->Listings->find('all')
             ->contain([

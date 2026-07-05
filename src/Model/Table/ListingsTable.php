@@ -15,7 +15,6 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\ListSc1810nodeTable&\Cake\ORM\Association\HasMany $ListSc1810node
  * @property \App\Model\Table\ListSc18Io500Table&\Cake\ORM\Association\HasMany $ListSc18Io500
  * @property \App\Model\Table\SubmissionsTable&\Cake\ORM\Association\BelongsToMany $Submissions
- *
  * @method \App\Model\Entity\Listing newEmptyEntity()
  * @method \App\Model\Entity\Listing newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Listing[] newEntities(array $data, array $options = [])

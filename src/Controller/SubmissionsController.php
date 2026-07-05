@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Core\Configure;
+use App\Model\Table\SubmissionsTable;
 use Cake\Datasource\ConnectionManager;
-use Cake\Filesystem\File;
+use Exception;
 use NXP\Exception\IncorrectBracketsException;
 use NXP\Exception\IncorrectExpressionException;
 use NXP\Exception\UnknownOperatorException;
@@ -39,7 +39,7 @@ class SubmissionsController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $submission = $this->Submissions->get($id, contain: ['Releases']);
 
@@ -86,7 +86,7 @@ class SubmissionsController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function configuration($id = null)
+    public function configuration(?string $id = null)
     {
         $submission = $this->Submissions->get($id, contain: ['Releases']);
 
@@ -142,11 +142,11 @@ class SubmissionsController extends AppController
      * Allows to create custom lists based on the last historical list available
      * We need to use the last historical list as the score it no longer stored in the submission
      *
-     * @param null $bof Release acronym.
-     * @param null $url Type url.
+     * @param string|null $bof Release acronym.
+     * @param string|null $url Type url.
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function customize($bof = null, $url = null)
+    public function customize(?string $bof = null, ?string $url = null)
     {
         $limit = 1000;
 
@@ -162,24 +162,12 @@ class SubmissionsController extends AppController
         $columns = $tableSchema->columns();
 
         // Remove private fields to prevent them from being exposed, selected, or used in equations
-        $columns = array_values(array_diff($columns, \App\Model\Table\SubmissionsTable::PRIVATE_FIELDS));
+        $columns = array_values(array_diff($columns, SubmissionsTable::PRIVATE_FIELDS));
 
         // This column can be used to compute custom metrics, but it will take the initial value from the last historical list
         array_splice($columns, 8, 0, ['io500_score']);
 
         $display = [];
-
-        $release = $this->Submissions->Releases->find('all')
-            ->contain([
-                'Listings' => [
-                    'Types',
-                ],
-            ])
-            ->where([
-                'Releases.release_date <=' => date('Y-m-d'),
-                'Releases.acronym' => strtoupper($bof),
-            ])
-            ->first();
 
         $listing = $this->Submissions->ListingsSubmissions->Listings->find('all')
             ->contain([
@@ -211,8 +199,8 @@ class SubmissionsController extends AppController
         $equation = false;
         $valid = true;
 
-        $displayPrefixes = \App\Model\Table\SubmissionsTable::DISPLAY_PREFIXES;
-        $extraDisplayFields = \App\Model\Table\SubmissionsTable::EXTRA_DISPLAY_FIELDS;
+        $displayPrefixes = SubmissionsTable::DISPLAY_PREFIXES;
+        $extraDisplayFields = SubmissionsTable::EXTRA_DISPLAY_FIELDS;
 
         foreach ($submissions as $submission) {
             // We will use the latest valid score to display
@@ -225,7 +213,7 @@ class SubmissionsController extends AppController
 
             // Restrict selected fields to known display prefixes/fields and exclude private fields
             $selected_to_display['custom-fields'] = array_values(array_filter(
-                array_diff($selected_to_display['custom-fields'], \App\Model\Table\SubmissionsTable::PRIVATE_FIELDS),
+                array_diff($selected_to_display['custom-fields'], SubmissionsTable::PRIVATE_FIELDS),
                 function ($field) use ($displayPrefixes, $extraDisplayFields) {
                     // Allow wildcard group options (e.g. "information_*")
                     if (str_ends_with($field, '*')) {
@@ -240,7 +228,7 @@ class SubmissionsController extends AppController
                     }
 
                     return in_array($field, $extraDisplayFields, true);
-                }
+                },
             ));
 
             foreach ($selected_to_display['custom-fields'] as $option) {
@@ -296,7 +284,7 @@ class SubmissionsController extends AppController
                         $this->Flash->error(__('Sorry, but the variable "{0}" is unknown! Please, make sure that your are using the variable names.', $e->getMessage()));
 
                         break;
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $valid = false;
 
                         $this->Flash->error(__('Sorry, but there was an error when creating the custom list! Please, make sure you are using the correct variables and syntax.'));
