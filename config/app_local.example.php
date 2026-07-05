@@ -64,6 +64,12 @@ return [
 
         /*
          * The test connection is used during the test suite.
+         *
+         * IMPORTANT: this MUST be a dedicated database, different from `default`.
+         * The fixtures truncate and reload their tables on every test run, so
+         * pointing this at your dev/default database will wipe that data.
+         * The tables must already exist here (fixtures reflect the schema and
+         * insert their own rows; they do not create tables).
          */
         'test' => [
             'host' => 'localhost',
