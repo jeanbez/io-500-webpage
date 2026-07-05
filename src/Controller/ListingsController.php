@@ -6,6 +6,8 @@ namespace App\Controller;
 use App\Model\Table\SubmissionsTable;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
+use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 
 /**
  * Listings Controller
@@ -18,11 +20,11 @@ class ListingsController extends AppController
     /**
      * List method
      *
-     * @param null $bof Release acronym.
-     * @param null $url Type url.
+     * @param string|null $bof Release acronym.
+     * @param string|null $url Type url.
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function list($bof = null, $url = null)
+    public function list(?string $bof = null, ?string $url = null)
     {
         $limit = Configure::read('IO500.pagination');
 
@@ -43,8 +45,8 @@ class ListingsController extends AppController
                 ->orderBy(['Releases.release_date' => 'DESC'])
                 ->first();
             if ($latest === null) {
-                throw new \Cake\Http\Exception\NotFoundException(
-                    __('No published lists yet')
+                throw new NotFoundException(
+                    __('No published lists yet'),
                 );
             }
             $bof = $latest->release->acronym;
@@ -120,7 +122,7 @@ class ListingsController extends AppController
      *
      * @return \Cake\Http\Response
      */
-    public function plotsData()
+    public function plotsData(): Response
     {
         $rows = $this->Listings->ListingsSubmissions->find('all')
             ->contain([
@@ -192,11 +194,11 @@ class ListingsController extends AppController
     /**
      * Download method
      *
-     * @param null $bof Release acronym.
-     * @param null $url Type url.
+     * @param string|null $bof Release acronym.
+     * @param string|null $url Type url.
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function download($bof = null, $url = null)
+    public function download(?string $bof = null, ?string $url = null)
     {
         $db = ConnectionManager::get('default');
 
@@ -210,7 +212,7 @@ class ListingsController extends AppController
         // (e.g. PII) so the CSV header stays aligned with the serialized rows.
         $columns = array_values(array_diff(
             $tableSchema->columns(),
-            SubmissionsTable::PRIVATE_FIELDS
+            SubmissionsTable::PRIVATE_FIELDS,
         ));
 
         // If empty $bof get the last released one
@@ -230,18 +232,6 @@ class ListingsController extends AppController
                 ->first();
 
             $bof = $release->acronym;
-        } else {
-            $release = $this->Listings->Releases->find('all')
-                ->contain([
-                    'Listings' => [
-                        'Types',
-                    ],
-                ])
-                ->where([
-                    'Releases.release_date <=' => date('Y-m-d'),
-                    'Releases.acronym' => strtoupper($bof),
-                ])
-                ->first();
         }
 
         // If empty $url get the historical one
