@@ -43,40 +43,59 @@ class SubmissionsController extends AppController
     {
         $submission = $this->Submissions->get($id, contain: ['Releases']);
 
-        // We need to fetch the scores
-        $score = $this->Submissions->ListingsSubmissions->find('all')
-            ->contain([
-                'Listings' => [
-                    'Releases',
-                ],
-            ])
-            ->where([
-                'ListingsSubmissions.submission_id' => $submission->id,
-                'Releases.release_date <=' => date('Y-m-d'),
-            ])
-            ->orderBy([
-                'ListingsSubmissions.score' => 'DESC',
-                'Listings.type_id' => 'DESC',
-                'Releases.release_date' => 'DESC',
-            ])
-            ->first();
+        // Rank within the list that produced this submission's best score.
+        $header = $this->Submissions->rankingHeader($submission);
 
-        if (empty($score)) {
+        if (empty($header)) {
             $this->Flash->error(__('This submission is not yet available.'));
 
             return $this->redirect('/');
         }
 
+        ['score' => $score, 'rank' => $rank, 'listTotal' => $listTotal, 'listName' => $listName] = $header;
         $submission->io500_score = $score->score;
 
+        // Reference cloud for the bandwidth-vs-metadata scatter: this submission's
+        // own edition, so peers share the same time period. Two real lists back the
+        // toggle - the Full list (every entry) and the 10-Node Challenge list -
+        // rather than guessing node class from a node-count threshold.
+        $releaseId = $score->listing->release_id;
+        $Listings = $this->Submissions->ListingsSubmissions->Listings;
+        $buildPop = function ($typeId) use ($releaseId, $Listings) {
+            $listing = $Listings->find()
+                ->where(['release_id' => $releaseId, 'type_id' => $typeId])
+                ->first();
+            if (!$listing) {
+                return [];
+            }
+            $rows = $this->Submissions->ListingsSubmissions->find()
+                ->contain(['Submissions'])
+                ->where(['ListingsSubmissions.listing_id' => $listing->id])
+                ->all();
+            $points = [];
+            foreach ($rows as $ls) {
+                $s = $ls->submission;
+                if ($s && $s->io500_bw > 0 && $s->io500_md > 0) {
+                    $points[] = [round((float)$s->io500_bw, 2), round((float)$s->io500_md, 2)];
+                }
+            }
+
+            return $points;
+        };
+        $population = [
+            'edition' => strtoupper($score->listing->release->acronym),
+            'full' => $buildPop(3),  // Full list
+            'ten' => $buildPop(2),   // 10-Node Challenge (Research tier: every 10-node run)
+        ];
+
         $questionnaire = $this->Submissions->Questionnaires->find('all')
+            ->contain(['ReproducibilityScores'])
             ->where([
                 'Questionnaires.submission_id' => $submission->id,
             ])
             ->first();
 
-        $this->set('submission', $submission);
-        $this->set('questionnaire', $questionnaire);
+        $this->set(compact('submission', 'questionnaire', 'rank', 'listTotal', 'listName', 'population'));
     }
 
     /**
@@ -91,13 +110,20 @@ class SubmissionsController extends AppController
         $submission = $this->Submissions->get($id, contain: ['Releases']);
 
         $questionnaire = $this->Submissions->Questionnaires->find('all')
+            ->contain(['ReproducibilityScores'])
             ->where([
                 'Questionnaires.submission_id' => $submission->id,
             ])
             ->first();
 
-        $this->set('submission', $submission);
-        $this->set('questionnaire', $questionnaire);
+        // Ranking context for the shared submission header (may be null when unranked).
+        $rank = $listTotal = $listName = null;
+        $header = $this->Submissions->rankingHeader($submission);
+        if ($header) {
+            ['rank' => $rank, 'listTotal' => $listTotal, 'listName' => $listName] = $header;
+        }
+
+        $this->set(compact('submission', 'questionnaire', 'rank', 'listTotal', 'listName'));
     }
 
     /**

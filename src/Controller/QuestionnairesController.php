@@ -28,12 +28,19 @@ class QuestionnairesController extends AppController
             return $this->redirect(['controller' => 'submissions', 'action' => 'view', $submission->id]);
         }
 
-        $questionnaire = $this->Questionnaires->get($submission->questionnaire->id);
+        $questionnaire = $this->Questionnaires->get($submission->questionnaire->id, contain: ['ReproducibilityScores']);
 
         if (date('Y-m-d') < $submission->release->release_date->i18nFormat('yyyy-MM-dd')) {
             $this->Flash->error(__('This submission belongs to a future unreleased list.'));
         }
 
-        $this->set(compact('questionnaire', 'submission'));
+        // Ranking context for the shared submission header (may be null when unranked).
+        $rank = $listTotal = $listName = null;
+        $header = $this->Questionnaires->Submissions->rankingHeader($submission);
+        if ($header) {
+            ['rank' => $rank, 'listTotal' => $listTotal, 'listName' => $listName] = $header;
+        }
+
+        $this->set(compact('questionnaire', 'submission', 'rank', 'listTotal', 'listName'));
     }
 }

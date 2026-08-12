@@ -73,6 +73,49 @@ class SubmissionsTable extends Table
     }
 
     /**
+     * Resolve the header ranking context for a submission: its best-scoring
+     * released listing, the rank within that list, the list size and its name.
+     * Shared by the Summary, Configuration and Reproducibility views.
+     *
+     * @param \Cake\Datasource\EntityInterface $submission The submission.
+     * @return array|null compact('score', 'rank', 'listTotal', 'listName'), or null when unranked.
+     */
+    public function rankingHeader(\Cake\Datasource\EntityInterface $submission): ?array
+    {
+        $score = $this->ListingsSubmissions->find()
+            ->contain([
+                'Listings' => [
+                    'Releases',
+                    'Types',
+                ],
+            ])
+            ->where([
+                'ListingsSubmissions.submission_id' => $submission->id,
+                'Releases.release_date <=' => date('Y-m-d'),
+            ])
+            ->orderBy([
+                'ListingsSubmissions.score' => 'DESC',
+                'Listings.type_id' => 'DESC',
+                'Releases.release_date' => 'DESC',
+            ])
+            ->first();
+
+        if (empty($score)) {
+            return null;
+        }
+
+        $rank = $this->ListingsSubmissions->find()
+            ->where(['listing_id' => $score->listing_id, 'score >' => $score->score])
+            ->count() + 1;
+        $listTotal = $this->ListingsSubmissions->find()
+            ->where(['listing_id' => $score->listing_id])
+            ->count();
+        $listName = strtoupper($score->listing->release->acronym) . ' ' . $score->listing->type->name;
+
+        return compact('score', 'rank', 'listTotal', 'listName');
+    }
+
+    /**
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.

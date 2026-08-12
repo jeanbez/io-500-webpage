@@ -1,77 +1,5 @@
-<div class="row">
-    <div class="column-responsive column-80">
-        <div class="submissions view content">
-            <h2>
-                <div class="badge badge-<?php echo $questionnaire->reproducibility_score_id; ?>"></div>
-
-                <?php echo h($submission->information_system) ?>
-            </h2>
-
-            <div class="submissions-action">
-                <?php
-                echo $this->Html->link(
-                    _('Summary'),
-                    [
-                        'controller' => 'submissions',
-                        'action' => 'view',
-                        $submission->id
-                    ],
-                    [
-                        'class' => 'button-navigation'
-                    ]
-                );
-            
-                echo $this->Html->link(
-                    _('Configuration'),
-                    [
-                        'controller' => 'submissions',
-                        'action' => 'configuration',
-                        $submission->id
-                    ],
-                    [
-                        'class' => 'button-navigation'
-                    ]
-                );
-
-                if ($questionnaire) {
-                    echo $this->Html->link(
-                        _('Reproducibility'),
-                        [
-                            'controller' => 'questionnaires',
-                            'action' => 'view',
-                            $submission->id
-                        ],
-                        [
-                            'class' => 'button'
-                        ]
-                    );
-                }
-
-                if ($submission->repository_url) {
-                    echo $this->Html->link(
-                        _('Files'),
-                        $submission->repository_url,
-                        [
-                            'target' => '_blank',
-                            'class' => 'button-navigation'
-                        ]
-                    );
-                }
-
-                if ($submission->cdcl_url) {
-                    echo $this->Html->link(
-                        _('Data Center'),
-                        $submission->cdcl_url,
-                        [
-                            'class' => 'button-navigation',
-                            'target' => '_blank'
-                        ]
-                    );
-                }
-                ?>
-            </div>
-        </div>
-    </div>
+<div class="subview">
+    <?php echo $this->element('submission_header', ['active' => 'reproducibility']); ?>
 </div>
 
 <div class="both"></div>
@@ -325,7 +253,8 @@ echo $this->Html->script('tinymce/tinymce.min.js', [
         readonly: true,
         plugins: 'image link lists searchreplace table wordcount',
         toolbar: false,
-        license_key: 'gpl'
+        license_key: 'gpl',
+        content_style: "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'); body { font-family: 'Inter', sans-serif; font-size: 14px; color: #232323; line-height: 1.5; }"
     }).then(function(editors) {
         t_editors = editors;
     });
