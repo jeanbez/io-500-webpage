@@ -52,7 +52,6 @@
             ?>
         to download per-release CSVs and create your own visualisations.
     </p>
-    <a href="https://www.freepik.com/free-photos-vectors/business" class="credits">Business vector created by stories - www.freepik.com</a>
 </div>
 
 <div class="submissions index content">

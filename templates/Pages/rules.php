@@ -1,5 +1,13 @@
 <?php $this->assign('title', 'Rules'); ?>
 
+<div class="landing landing-rules">
+    <h1><?php echo __('Rules') ?></h1>
+
+    <p>
+        How the IO500 competition is governed, executed, and submitted.
+    </p>
+</div>
+
 <div class="content">
     <h2>The IO500 Foundation Steering Committee Rules - Version 2.0</h2>
 

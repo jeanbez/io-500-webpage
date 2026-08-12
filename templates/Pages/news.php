@@ -6,9 +6,15 @@ function cite($file) {
 }
 ?>
 
-<div class="content">
-    <h2>News</h2>
+<div class="landing landing-news">
+    <h1><?php echo __('News') ?></h1>
 
+    <p>
+        Announcements, list releases, and press coverage from the IO500 community.
+    </p>
+</div>
+
+<div class="content">
     <ul class="news">        
         <li>
             <span class="date">2026-05-06</span>
