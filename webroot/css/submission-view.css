@@ -105,23 +105,12 @@
 .sp-answer-body pre code{padding:0}
 .sp-answer-body .sp-none{color:var(--mute)}
 
-/* Configuration tab: restyle the DCL widget's output (templates/Submissions/configuration.php) */
-.sp-config #dcl_wrap{border:0;padding:0;margin:26px 0 0;background:none;box-shadow:none}
-.sp-config #dcl_wrap div.entity,.sp-config #dcl_wrap div.schema{border:0;border-radius:0;background:none;box-shadow:none;padding:0;margin:0 0 26px}
-.sp-config #dcl_wrap div.body div.entity,.sp-config #dcl_wrap div.body div.schema{border-left:2px solid var(--line);padding-left:16px;margin:18px 0 0 2px}
-.sp-config #dcl_wrap div.head{display:flex;align-items:baseline;gap:8px;background:none;border:0;border-bottom:1px solid var(--ink);padding:0 0 6px;margin:0}
-.sp-config #dcl_wrap div.head span[id^="h"]{font-size:18px;font-weight:600;color:var(--ink);text-transform:none;letter-spacing:-.01em}
-.sp-config #dcl_wrap div.body div.head span[id^="h"]{font-size:14px}
-.sp-config #dcl_wrap div.head span.name{font-size:14px;font-weight:400;color:var(--mute)}
-.sp-config #dcl_wrap span.navigation{margin-left:auto;float:none}
-.sp-config #dcl_wrap hr{display:none}
-.sp-config #dcl_wrap div.value{display:grid;grid-template-columns:34% 1fr;gap:16px;padding:7px 0;margin:0;border-bottom:1px solid var(--line)}
-.sp-config #dcl_wrap span.label{display:block;color:var(--mute);font-size:14px;font-weight:400;text-transform:none;letter-spacing:0;margin:0}
-.sp-config #dcl_wrap span.value{display:block;border:0;border-radius:0;background:none;box-shadow:none;padding:0;margin:0;min-height:0;font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+/* Configuration tab (templates/Submissions/configuration.php): the DCL widget keeps its own
+   style, inside the panel the tab used before. */
+.sp-config #dcl_wrap{position:relative;background:#fff;border:1px solid #dadada;border-radius:10px;padding:26px 20px 18px}
 /* The widget prints Font Awesome's chevron (U+F078); draw it with Bootstrap Icons */
-.sp-config #dcl_wrap a.rollup.fa{font-size:0;color:var(--mute);text-decoration:none}
+.sp-config #dcl_wrap a.rollup.fa{font-size:0;text-decoration:none}
 .sp-config #dcl_wrap a.rollup.fa::before{font-family:"bootstrap-icons";content:"\f282";font-size:14px}
-.sp-config #dcl_wrap a.rollup.fa:hover{color:#d63b1e}
 
 @media (max-width:760px){
     .sp-scores{grid-template-columns:1fr}
