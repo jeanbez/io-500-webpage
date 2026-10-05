@@ -1,3 +1,14 @@
+/* Short pages: the footer still sits at the bottom of the window */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+body > .main {
+    flex: 1 0 auto;
+}
+
 html {
     color: #222;
     font-family: 'Inter', sans-serif;
