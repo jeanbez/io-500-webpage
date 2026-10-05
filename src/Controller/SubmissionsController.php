@@ -5,6 +5,8 @@ namespace App\Controller;
 
 use App\Model\Table\SubmissionsTable;
 use Cake\Datasource\ConnectionManager;
+use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Exception;
 use NXP\Exception\IncorrectBracketsException;
 use NXP\Exception\IncorrectExpressionException;
@@ -95,7 +97,90 @@ class SubmissionsController extends AppController
             ])
             ->first();
 
-        $this->set(compact('submission', 'questionnaire', 'rank', 'listTotal', 'listName', 'population'));
+        // Ranked lists this submission is on, and the one to compare against first:
+        // ?list=<listing id> when it is one of them, otherwise the latest release's
+        // Production list, otherwise the latest release's best-ranked list.
+        $memberships = $this->Submissions->listMemberships((int)$submission->id);
+        $selected = $this->defaultMembership($memberships, (int)$this->request->getQuery('list'));
+        $comparison = $selected ? [
+            'listing_id' => $selected['listing_id'],
+            'entries' => $this->Submissions->comparisonData($selected['listing_id']),
+            'history' => $this->Submissions->positionHistory((int)$submission->id, $selected['type_id']),
+        ] : null;
+
+        $this->set(compact(
+            'submission',
+            'questionnaire',
+            'rank',
+            'listTotal',
+            'listName',
+            'population',
+            'memberships',
+            'selected',
+            'comparison',
+        ));
+    }
+
+    /**
+     * Comparison data for one ranked list the submission is on, loaded by the summary
+     * page when another list is selected. 404 for any other listing (unreleased,
+     * unranked, or not containing this submission).
+     *
+     * @param string $id Submission id.
+     * @param string $listingId Listing id.
+     * @return \Cake\Http\Response
+     * @throws \Cake\Http\Exception\NotFoundException
+     */
+    public function compare(string $id, string $listingId): Response
+    {
+        $memberships = $this->Submissions->listMemberships((int)$id);
+        $selected = current(array_filter(
+            $memberships,
+            fn(array $m) => $m['listing_id'] === (int)$listingId,
+        ));
+        if (!$selected) {
+            throw new NotFoundException();
+        }
+
+        $payload = [
+            'listing_id' => $selected['listing_id'],
+            'entries' => $this->Submissions->comparisonData($selected['listing_id']),
+            'history' => $this->Submissions->positionHistory((int)$id, $selected['type_id']),
+        ];
+        $this->autoRender = false;
+
+        return $this->response
+            ->withType('application/json')
+            ->withHeader('Cache-Control', 'public, max-age=600')
+            ->withStringBody((string)json_encode($payload));
+    }
+
+    /**
+     * Pick the list to compare against first.
+     *
+     * @param array $memberships Output of SubmissionsTable::listMemberships() (newest first).
+     * @param int $requested Listing id from ?list=, or 0.
+     * @return array|null
+     */
+    private function defaultMembership(array $memberships, int $requested): ?array
+    {
+        if (!$memberships) {
+            return null;
+        }
+        foreach ($memberships as $m) {
+            if ($m['listing_id'] === $requested) {
+                return $m;
+            }
+        }
+        $latest = array_filter($memberships, fn(array $m) => $m['release'] === $memberships[0]['release']);
+        foreach ($latest as $m) {
+            if ($m['type_url'] === 'production') {
+                return $m;
+            }
+        }
+        usort($latest, fn(array $a, array $b) => $a['rank'] / $a['total'] <=> $b['rank'] / $b['total']);
+
+        return $latest[0];
     }
 
     /**
