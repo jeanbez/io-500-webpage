@@ -157,6 +157,13 @@ class SubmissionsController extends AppController
     {
         $submission = $this->Submissions->get($id, contain: ['Releases']);
 
+        // Same gate as view(): only submissions on a released list are shown.
+        if (!$this->Submissions->rankingHeader($submission)) {
+            $this->Flash->error(__('This submission is not yet available.'));
+
+            return $this->redirect('/');
+        }
+
         $questionnaire = $this->Submissions->Questionnaires->find('all')
             ->contain(['ReproducibilityScores'])
             ->where([
@@ -164,14 +171,7 @@ class SubmissionsController extends AppController
             ])
             ->first();
 
-        // Ranking context for the shared submission header (may be null when unranked).
-        $rank = $listTotal = $listName = null;
-        $header = $this->Submissions->rankingHeader($submission);
-        if ($header) {
-            ['rank' => $rank, 'listTotal' => $listTotal, 'listName' => $listName] = $header;
-        }
-
-        $this->set(compact('submission', 'questionnaire', 'rank', 'listTotal', 'listName'));
+        $this->set(compact('submission', 'questionnaire'));
     }
 
     /**

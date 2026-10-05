@@ -22,6 +22,13 @@ class QuestionnairesController extends AppController
     {
         $submission = $this->Questionnaires->Submissions->get($submission_id, contain: ['Releases', 'Questionnaires']);
 
+        // Same gate as the summary: only submissions on a released list are shown.
+        if (!$this->Questionnaires->Submissions->rankingHeader($submission)) {
+            $this->Flash->error(__('This submission is not yet available.'));
+
+            return $this->redirect('/');
+        }
+
         if (!$submission->questionnaire) {
             $this->Flash->error(__('This submission does not have a reproducibility questionnaire.'));
 
@@ -30,17 +37,6 @@ class QuestionnairesController extends AppController
 
         $questionnaire = $this->Questionnaires->get($submission->questionnaire->id, contain: ['ReproducibilityScores']);
 
-        if (date('Y-m-d') < $submission->release->release_date->i18nFormat('yyyy-MM-dd')) {
-            $this->Flash->error(__('This submission belongs to a future unreleased list.'));
-        }
-
-        // Ranking context for the shared submission header (may be null when unranked).
-        $rank = $listTotal = $listName = null;
-        $header = $this->Questionnaires->Submissions->rankingHeader($submission);
-        if ($header) {
-            ['rank' => $rank, 'listTotal' => $listTotal, 'listName' => $listName] = $header;
-        }
-
-        $this->set(compact('questionnaire', 'submission', 'rank', 'listTotal', 'listName'));
+        $this->set(compact('questionnaire', 'submission'));
     }
 }
