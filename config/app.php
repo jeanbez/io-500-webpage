@@ -89,7 +89,9 @@ return [
      * enable timestamping regardless of debug value.
      */
     'Asset' => [
-        //'timestamp' => true,
+        // Append each file's modification time to CSS/JS URLs, so browsers pick up
+        // changed stylesheets and scripts right after a deploy.
+        'timestamp' => 'force',
         // 'cacheTime' => '+1 year'
     ],
 
