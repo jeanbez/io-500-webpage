@@ -90,7 +90,7 @@ $data = [
         <div><div class="v"><?php echo $fmt($submission->io500_md) ?><small>kIOP/s</small></div><div class="k"><?php echo __('Metadata') ?></div></div>
     </div>
 
-    <div class="sp-cols<?php echo count($memberships) > 1 ? '' : ' one' ?>">
+    <div class="sp-cols<?php echo $memberships ? '' : ' one' ?>">
         <div>
             <h3><?php echo __('System') ?></h3>
             <table class="sp-spec" id="sp-spec">
@@ -102,7 +102,7 @@ $data = [
                 </tbody>
             </table>
         </div>
-        <?php if (count($memberships) > 1) : ?>
+        <?php if ($memberships) : ?>
             <div>
                 <h3><?php echo __('Ranking history') ?></h3>
                 <div class="sp-scrollx">

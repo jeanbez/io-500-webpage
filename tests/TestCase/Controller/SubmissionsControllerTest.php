@@ -65,9 +65,9 @@ class SubmissionsControllerTest extends TestCase
     }
 
     /**
-     * The ranking history only shows when the submission is on more than one ranked list.
+     * The ranking history shows whenever the submission is on a ranked list, even one.
      */
-    public function testRankingHistoryOnlyForSeveralLists(): void
+    public function testRankingHistoryAlwaysShown(): void
     {
         $this->get('/submissions/view/6'); // SC23 and ISC24 Production
         $this->assertResponseContains('id="sp-lists"');
@@ -75,7 +75,7 @@ class SubmissionsControllerTest extends TestCase
 
         $this->get('/submissions/view/4'); // ISC24 Production only
         $this->assertResponseOk();
-        $this->assertResponseNotContains('id="sp-lists"');
+        $this->assertResponseContains('id="sp-lists"');
     }
 
     public function testViewWithoutSubmissionDate(): void
