@@ -245,13 +245,15 @@ CREATE TABLE `records` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 -- In the real databases listings_submissions is a VIEW (UNION ALL over the per-list
--- list_* tables). Tests use a plain table with the same columns. score stays FLOAT
--- (4-byte) like the list_* tables, so float-precision bugs reproduce in tests.
+-- list_* tables). Tests use a plain table with the same columns, keeping the view's
+-- quirks so bugs reproduce in tests:
+-- - id is only unique within one listing (each list_* table numbers its own rows);
+-- - score is FLOAT (4-byte), like the list_* tables.
 DROP TABLE IF EXISTS `listings_submissions`;
 CREATE TABLE `listings_submissions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `listing_id` int DEFAULT NULL,
+  `id` int NOT NULL,
+  `listing_id` int NOT NULL,
   `submission_id` int DEFAULT NULL,
   `score` float DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`listing_id`, `id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;

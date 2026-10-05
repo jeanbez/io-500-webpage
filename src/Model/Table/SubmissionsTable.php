@@ -107,10 +107,11 @@ class SubmissionsTable extends Table
 
         // Compare against the stored score in SQL. Binding $score->score from PHP
         // rounds the FLOAT column to 14 digits, so the entry would count itself.
-        // Ties are ordered by entry id, as on the list page.
+        // Ties are ordered by entry id, as on the list page. Entry ids are only
+        // unique within a listing (the view unions one table per list).
         $own = $this->ListingsSubmissions->find()
             ->select(['score'])
-            ->where(['id' => $score->id]);
+            ->where(['listing_id' => $score->listing_id, 'id' => $score->id]);
         $rank = $this->ListingsSubmissions->find()
             ->where(['listing_id' => $score->listing_id])
             ->where(['OR' => [
