@@ -25,6 +25,9 @@ class ListingsSubmissionsFixture extends TestFixture
             ['id' => 2, 'listing_id' => 1, 'submission_id' => 2, 'score' => 5000],
             ['id' => 3, 'listing_id' => 1, 'submission_id' => 3, 'score' => 3000],
             ['id' => 4, 'listing_id' => 1, 'submission_id' => 6, 'score' => 797.038025],
+            // SC23 Research: a tie for #1, the lower entry id (submission 9) wins
+            ['id' => 2, 'listing_id' => 2, 'submission_id' => 8, 'score' => 400],
+            ['id' => 1, 'listing_id' => 2, 'submission_id' => 9, 'score' => 400],
             // ISC24 Production: carried-over 1, 2, 3, 6 plus new 4, 5, 7, 8, 9
             ['id' => 2, 'listing_id' => 4, 'submission_id' => 1, 'score' => 9000],
             ['id' => 3, 'listing_id' => 4, 'submission_id' => 2, 'score' => 5000],
