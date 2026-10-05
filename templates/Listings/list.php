@@ -55,8 +55,8 @@
         <?php echo $listing->description; ?>
     </div>
 
-    <div class="table-responsive">
-        <table class="tb">
+    <div class="table-responsive tb-list-wrap">
+        <table class="tb tb-list">
             <thead>
                 <tr>
                     <th rowspan="3" class="tb-id"><?php echo $this->Paginator->sort('score', '#') ?></th>
@@ -128,7 +128,8 @@
                     </td>
                     <td class="tb-identity">
                         <?php
-                        echo $this->Html->link($entry->submission->information_institution, [
+                        // (string): some entries have no institution or system, and link() rejects null.
+                        echo $this->Html->link((string)$entry->submission->information_institution, [
                             'controller' => 'submissions',
                             'action' => 'view',
                             $entry->submission->id
@@ -137,7 +138,13 @@
                         ]);
                         ?>
                         <span class="identity-meta">
-                            <?php echo h($entry->submission->information_system) ?>
+                            <?php echo $this->Html->link((string)$entry->submission->information_system, [
+                                'controller' => 'submissions',
+                                'action' => 'view',
+                                $entry->submission->id,
+                            ], [
+                                'class' => 'identity-system',
+                            ]) ?>
                             <?php if (!empty($entry->submission->information_filesystem_type)) : ?>
                                 <span class="fs-tag"><?php echo h($entry->submission->information_filesystem_type) ?></span>
                             <?php endif; ?>
@@ -292,6 +299,32 @@
 <script src="https://unpkg.com/tippy.js@6"></script>
 <script type="text/javascript">
 tippy(document.querySelectorAll('.badge'));
+
+// A click anywhere in a row opens the submission (links keep their own target).
+document.querySelectorAll('.tb-list tbody tr').forEach(function (tr) {
+    var link = tr.querySelector('a.identity-institution');
+    if (!link) {
+        return;
+    }
+    tr.addEventListener('click', function (e) {
+        if (!e.target.closest('a')) {
+            location.href = link.href;
+        }
+    });
+});
+
+// Sticky three-row header: offset each row by the height of the rows above it.
+(function () {
+    function stick() {
+        var top = 0;
+        document.querySelectorAll('.tb-list thead tr').forEach(function (row) {
+            row.querySelectorAll('th').forEach(function (th) { th.style.top = top + 'px'; });
+            top += row.getBoundingClientRect().height;
+        });
+    }
+    stick();
+    addEventListener('resize', stick);
+})();
 
 // Toggle a system in/out of the parallel-coordinates plot from the legend.
 document.querySelectorAll('.pc-legend li').forEach(function (item) {

@@ -38,6 +38,7 @@ class ListingsSubmissionsFixture extends TestFixture
             // Full lists (unranked)
             ['id' => 1, 'listing_id' => 3, 'submission_id' => 6, 'score' => 797.038025],
             ['id' => 1, 'listing_id' => 6, 'submission_id' => 6, 'score' => 797.038025],
+            ['id' => 2, 'listing_id' => 6, 'submission_id' => 11, 'score' => 50],
             // Future SC99 Production
             ['id' => 1, 'listing_id' => 7, 'submission_id' => 10, 'score' => 99999],
             ['id' => 2, 'listing_id' => 7, 'submission_id' => 6, 'score' => 797.038025],

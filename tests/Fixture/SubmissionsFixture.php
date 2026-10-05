@@ -49,6 +49,8 @@ class SubmissionsFixture extends TestFixture
             [8, 2, 'Theta', 'Inst H', 'Lustre', 500.0],
             [9, 2, 'Iota', 'Inst I', 'Lustre', 500.0],
             [10, 3, 'Future', 'Inst J', 'Lustre', 99999.0],
+            // No institution, as some older Full-list entries.
+            [11, 2, 'Kappa', null, 'Lustre', 50.0],
         ];
         $this->records = [];
         foreach ($rows as [$id, $releaseId, $system, $institution, $fs, $score]) {

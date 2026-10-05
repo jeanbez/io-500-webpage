@@ -28,6 +28,8 @@ class ListingsControllerTest extends TestCase
 
         $body = (string)$this->_response->getBody();
         $this->assertLessThan(strpos($body, 'Iota'), strpos($body, 'Theta'));
+        // The system name links to its submission.
+        $this->assertMatchesRegularExpression('#href="/submissions/view/6" class="identity-system">Shaheen-like<#', $body);
     }
 
     /**
@@ -41,5 +43,15 @@ class ListingsControllerTest extends TestCase
         $this->assertResponseNotContains('Future');
         // The home URL names no list type; the Production tab is still marked active.
         $this->assertMatchesRegularExpression('#list/isc24/production" class="tab tab-active"#', (string)$this->_response->getBody());
+    }
+
+    /**
+     * Entries without an institution still render (link() rejects a null title).
+     */
+    public function testListWithMissingInstitution(): void
+    {
+        $this->get('/list/isc24/full');
+        $this->assertResponseOk();
+        $this->assertResponseContains('Kappa');
     }
 }

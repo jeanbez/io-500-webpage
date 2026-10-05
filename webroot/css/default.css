@@ -521,11 +521,21 @@ table {
     width: 23px;
 }
 
+/* Plain rank numbers; only the podium (rank-1..3) keeps a colored circle */
 .rank {
-    background: #d63b1e;
+    background: none;
+    color: #16181d;
+    font-size: 14px;
+    font-weight: 500;
+    width: auto;
+    min-width: 23px;
 }
 
-.rank:hover, .custom-rank:hover{
+.rank:hover {
+    color: #d63b1e;
+}
+
+.rank-1:hover, .rank-2:hover, .rank-3:hover, .custom-rank:hover {
     background: #444;
     color: #fff;
 }
@@ -534,10 +544,10 @@ table {
     background: #222;
 }
 
-/* IO500 measurements read as a benchmark readout (monospace, tabular) */
+/* IO500 measurements: body font, aligned digits */
 .tb td.tb-metric {
-    font-family: 'Lekton', monospace;
-    font-size: 13px;
+    color: #16181d;
+    font-size: 14px;
 }
 
 /* Score is the headline figure of that readout */
@@ -572,6 +582,13 @@ table {
 /* Podium colors for the top three ranks */
 .rank-1 {
     background: #e6b400;
+}
+
+.rank-1, .rank-2, .rank-3 {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    width: 23px;
 }
 
 .rank-2 {
@@ -1396,3 +1413,26 @@ footer > .container{
 
 .sv-panel{position:relative;background:var(--sv-panel);border:1px solid var(--sv-border);border-radius:10px;padding:26px 20px 18px}
 .subview > .sv-panel + .sv-panel,.subview > .sv-grid + .sv-panel,.subview > .sv-panel + .sv-grid,.subview > .sv-grid + .sv-grid{margin-top:16px}
+
+/* ================= List page table (templates/Listings/list.php) ================= */
+.submissions.index .release-information{color:#6b7079;font-size:14px;line-height:1.55}
+/* Units keep their real case: GiB/s, kIOP/s */
+.tb-list thead tr:nth-child(3) th{text-transform:none}
+/* Lighter group labels; Score is the column the list is ranked by */
+.tb-list thead tr:first-child th[colspan]{font-weight:500;color:#9aa0a8;font-size:11px;letter-spacing:.08em}
+.tb-list thead th.tb-score a{color:#16181d;font-weight:700}
+/* The system name also links to the submission; the whole row is clickable */
+.identity-system{color:inherit}
+.identity-system:hover{color:#d63b1e;text-decoration:underline}
+.tb-list tbody tr{cursor:pointer}
+.tb-list tbody tr:hover td{background:#f6f6f7}
+/* Header stays visible while scrolling (desktop, where the table is not clipped) */
+@media (min-width:1100px){
+    .tb-list-wrap{overflow:visible}
+    .tb-list thead th{position:sticky;background:#fff;z-index:3}
+}
+/* Phones: rank and identity stay in view while the table scrolls sideways */
+@media (max-width:760px){
+    .tb-list th.tb-id,.tb-list td.tb-id{min-width:44px}
+    .tb-list td.tb-identity,.tb-list th.tb-identity{position:sticky;left:44px;background:#fff;z-index:2;box-shadow:6px 0 6px -6px rgba(0,0,0,.15);min-width:170px;max-width:200px}
+}
