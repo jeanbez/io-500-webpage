@@ -15,6 +15,7 @@ declare(strict_types=1);
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
 
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\Fixture\SchemaLoader;
@@ -72,6 +73,9 @@ if (
     ));
     exit(1);
 }
+
+// Tests must not read or write tmp/cache, which the web server also owns.
+Cache::disable();
 
 // Recreate the schema in the local test database (drops every table there first).
 (new SchemaLoader())->loadSqlFiles(TESTS . 'schema.sql', 'test');
