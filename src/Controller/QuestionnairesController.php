@@ -37,6 +37,8 @@ class QuestionnairesController extends AppController
 
         $questionnaire = $this->Questionnaires->get($submission->questionnaire->id, contain: ['ReproducibilityScores']);
 
-        $this->set(compact('questionnaire', 'submission'));
+        $levels = $this->Questionnaires->ReproducibilityScores->find()->orderBy(['id' => 'ASC'])->all();
+
+        $this->set(compact('questionnaire', 'submission', 'levels'));
     }
 }

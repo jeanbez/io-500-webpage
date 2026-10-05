@@ -77,6 +77,34 @@
 #sp-tip b{font-weight:600}
 #sp-tip span{color:#b9bcc2}
 
+/* Reproducibility tab (templates/Questionnaires/view.php) */
+.sp-level{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:6px;padding:16px 20px;margin:26px 0 8px}
+.sp-level .badge{width:28px;height:28px;background-size:28px;flex:none;margin:2px 0 0}
+.sp-level b{font-size:16px;color:var(--ink)}
+.sp-level p{margin:4px 0 0;font-size:14px;color:var(--mute);line-height:1.55}
+.sp-levels{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;padding:0;list-style:none;font-size:12px;color:var(--mute)}
+.sp-levels li{padding:2px 8px;border:1px solid var(--line);border-radius:3px}
+.sp-levels li.on{border-color:#d63b1e;color:#d63b1e;font-weight:600}
+.sp-toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;margin:18px 0 6px}
+.sp-toc a{color:#3a3d44;font-weight:500}
+.sp-toc a:hover{color:#d63b1e}
+.sp-answer h2{margin:34px 0 4px;scroll-margin-top:12px}
+.sp-answer details{margin:0 0 10px}
+.sp-answer summary{cursor:pointer;font-size:13px;color:var(--mute);list-style:none}
+.sp-answer summary::-webkit-details-marker{display:none}
+.sp-answer summary::before{content:"\25B8  "}
+.sp-answer details[open] summary::before{content:"\25BE  "}
+.sp-question{font-size:13px;color:var(--mute);border-left:2px solid var(--line);padding:2px 0 2px 12px;margin:6px 0 0;line-height:1.55}
+.sp-question p{margin:0 0 6px}
+.sp-answer-body{font-size:14.5px;line-height:1.6;color:var(--ink);border-top:1px solid var(--ink);padding-top:10px;overflow-wrap:anywhere}
+.sp-answer-body p{margin:0 0 10px}
+.sp-answer-body a{color:var(--red)}
+.sp-answer-body pre,.sp-answer-body code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#f6f6f7;border-radius:4px}
+.sp-answer-body pre{padding:10px 12px;overflow-x:auto;white-space:pre;margin:0 0 10px}
+.sp-answer-body code{padding:1px 4px}
+.sp-answer-body pre code{padding:0}
+.sp-answer-body .sp-none{color:var(--mute)}
+
 @media (max-width:760px){
     .sp-scores{grid-template-columns:1fr}
     .sp-scores>div+div{border-left:0;border-top:1px solid var(--line)}

@@ -35,6 +35,11 @@ class SubmissionTabsTest extends TestCase
         $this->get('/questionnaires/view/6');
         $this->assertResponseOk();
         $this->assertResponseContains('General academic research.');
+        $this->assertResponseContains('Fully reproducible');
+        // Answers are cleaned: no scripts or event handlers from the submitter.
+        $this->assertResponseNotContains('alert("x")');
+        $this->assertResponseNotContains('steal()');
+        $this->assertResponseContains('<pre><code>osc.max_dirty_mb=1024</code></pre>');
     }
 
     /**
