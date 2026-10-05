@@ -45,7 +45,8 @@ class SubmissionsController extends AppController
     {
         $submission = $this->Submissions->get($id, contain: ['Releases']);
 
-        // Rank within the list that produced this submission's best score.
+        // The submission's best released list: gates unreleased submissions and gives
+        // the score shown, as stored on the list (D2 in tasks/todo-submission-view.md).
         $header = $this->Submissions->rankingHeader($submission);
 
         if (empty($header)) {
@@ -54,41 +55,7 @@ class SubmissionsController extends AppController
             return $this->redirect('/');
         }
 
-        ['score' => $score, 'rank' => $rank, 'listTotal' => $listTotal, 'listName' => $listName] = $header;
-        $submission->io500_score = $score->score;
-
-        // Reference cloud for the bandwidth-vs-metadata scatter: this submission's
-        // own edition, so peers share the same time period. Two real lists back the
-        // toggle - the Full list (every entry) and the 10-Node Challenge list -
-        // rather than guessing node class from a node-count threshold.
-        $releaseId = $score->listing->release_id;
-        $Listings = $this->Submissions->ListingsSubmissions->Listings;
-        $buildPop = function ($typeId) use ($releaseId, $Listings) {
-            $listing = $Listings->find()
-                ->where(['release_id' => $releaseId, 'type_id' => $typeId])
-                ->first();
-            if (!$listing) {
-                return [];
-            }
-            $rows = $this->Submissions->ListingsSubmissions->find()
-                ->contain(['Submissions'])
-                ->where(['ListingsSubmissions.listing_id' => $listing->id])
-                ->all();
-            $points = [];
-            foreach ($rows as $ls) {
-                $s = $ls->submission;
-                if ($s && $s->io500_bw > 0 && $s->io500_md > 0) {
-                    $points[] = [round((float)$s->io500_bw, 2), round((float)$s->io500_md, 2)];
-                }
-            }
-
-            return $points;
-        };
-        $population = [
-            'edition' => strtoupper($score->listing->release->acronym),
-            'full' => $buildPop(3),  // Full list
-            'ten' => $buildPop(2),   // 10-Node Challenge (Research tier: every 10-node run)
-        ];
+        $submission->io500_score = $header['score']->score;
 
         $questionnaire = $this->Submissions->Questionnaires->find('all')
             ->contain(['ReproducibilityScores'])
@@ -111,10 +78,6 @@ class SubmissionsController extends AppController
         $this->set(compact(
             'submission',
             'questionnaire',
-            'rank',
-            'listTotal',
-            'listName',
-            'population',
             'memberships',
             'selected',
             'comparison',

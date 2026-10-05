@@ -1,31 +1,29 @@
 <?php
 /**
- * Shared submission header: reproducibility medal, system name, rank pill,
- * institution/vendor/filesystem strip and the Summary/Configuration/Reproducibility tabs.
+ * Shared submission header: system name, a line with institution, storage and
+ * reproducibility, the Files / Data Center links and the
+ * Summary/Configuration/Reproducibility tabs.
  *
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Submission $submission
  * @var \App\Model\Entity\Questionnaire|null $questionnaire
  * @var string $active One of 'summary', 'configuration', 'reproducibility'.
- * @var int|null $rank Rank within the submission's best list (optional).
- * @var string|null $listName Name of that list (optional).
  */
-$num = fn($v) => $this->Number->format($v);
+$squash = fn($v) => trim((string)preg_replace('/\s+/', ' ', (string)$v));
 $repro = ($questionnaire && $questionnaire->reproducibility_score)
     ? $questionnaire->reproducibility_score->name : null;
-$hasRank = isset($rank, $listName);
+$storage = $squash($submission->information_storage_vendor . ' '
+    . ($submission->information_filesystem_name ?: $submission->information_filesystem_type));
+$lede = array_filter([h($squash($submission->information_institution)), h($storage)]);
+if ($repro) {
+    $lede[] = '<span class="sv-repro"><span class="badge badge-' . (int)$questionnaire->reproducibility_score_id
+        . '" aria-hidden="true"></span>' . h(ucfirst(strtolower($repro))) . '</span>';
+}
 ?>
 <header class="sv-head">
-    <div class="sv-head-l">
-        <?php if ($questionnaire && $questionnaire->reproducibility_score_id) : ?>
-            <span class="badge badge-<?php echo $questionnaire->reproducibility_score_id ?>"<?php echo $repro ? ' title="' . h($repro) . '"' : '' ?>></span>
-        <?php endif; ?>
-        <h1><?php echo h($submission->information_system) ?></h1>
-        <?php if ($hasRank) : ?>
-            <div class="sv-badges">
-                <span class="sv-badge sv-rank">#<?php echo $num($rank) ?> · <?php echo h($listName) ?></span>
-            </div>
-        <?php endif; ?>
+    <div>
+        <h1 class="sv-title"><?php echo h($squash($submission->information_system)) ?></h1>
+        <p class="sv-lede"><?php echo implode(' · ', $lede) ?></p>
     </div>
     <div class="sv-actions">
         <?php
@@ -38,12 +36,6 @@ $hasRank = isset($rank, $listName);
         ?>
     </div>
 </header>
-
-<div class="sv-strip">
-    <b><?php echo h($submission->information_institution) ?></b><span class="sep">|</span>
-    <?php echo h($submission->information_storage_vendor) ?><span class="sep">|</span>
-    <?php echo h(trim($submission->information_filesystem_type . ' ' . $submission->information_filesystem_version)) ?>
-</div>
 
 <nav class="sv-tabs">
     <a class="sv-tab<?php echo $active === 'summary' ? ' active' : '' ?>" href="<?php echo $this->Url->build(['controller' => 'submissions', 'action' => 'view', $submission->id]) ?>"><i class="bi bi-bar-chart-line" aria-hidden="true"></i><?php echo __('Summary') ?></a>

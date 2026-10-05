@@ -63,4 +63,36 @@ class SubmissionsControllerTest extends TestCase
         $this->get('/submissions/compare/999/4'); // unknown submission
         $this->assertResponseCode(404);
     }
+
+    /**
+     * The ranking history only shows when the submission is on more than one ranked list.
+     */
+    public function testRankingHistoryOnlyForSeveralLists(): void
+    {
+        $this->get('/submissions/view/6'); // SC23 and ISC24 Production
+        $this->assertResponseContains('id="sp-lists"');
+        $this->assertResponseContains('Submitted');
+
+        $this->get('/submissions/view/4'); // ISC24 Production only
+        $this->assertResponseOk();
+        $this->assertResponseNotContains('id="sp-lists"');
+    }
+
+    public function testViewWithoutSubmissionDate(): void
+    {
+        $this->get('/submissions/view/7');
+        $this->assertResponseOk();
+        $this->assertResponseNotContains('Submitted');
+    }
+
+    /**
+     * ?list= picks the list to compare against when the submission is on it.
+     */
+    public function testListQueryParameterSelectsList(): void
+    {
+        $this->get('/submissions/view/6?list=1');
+        $this->assertResponseContains('"comparison":{"listing_id":1,');
+        $this->get('/submissions/view/6?list=7'); // unreleased: falls back to the latest
+        $this->assertResponseContains('"comparison":{"listing_id":4,');
+    }
 }

@@ -62,7 +62,8 @@ class SubmissionsFixture extends TestFixture
                 'information_filesystem_type' => $fs,
                 'information_client_nodes' => 10 * $id,
                 'information_client_total_procs' => 160 * $id,
-                'information_submission_date' => '2023-11-01',
+                // Submission 7 has no date, as some older submissions do.
+                'information_submission_date' => $id === 7 ? null : '2023-11-01',
                 'io500_score' => $score,
                 'io500_bw' => $score / 10,
                 'io500_md' => $score * 2,

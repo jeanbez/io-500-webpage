@@ -143,7 +143,7 @@ class SubmissionsTable extends Table
      * entries scoring higher, plus equal scores with a lower entry id.
      *
      * @param int $submissionId Submission id.
-     * @return list<array{listing_id: int, release: string, type_id: int, type_name: string, type_url: string, rank: int, total: int}>
+     * @return list<array{listing_id: int, release: string, type_id: int, type_name: string, type_url: string, type_position: int, rank: int, total: int}>
      */
     public function listMemberships(int $submissionId): array
     {
@@ -155,6 +155,7 @@ class SubmissionsTable extends Table
                 'type_id' => 'Types.id',
                 'type_name' => 'Types.name',
                 'type_url' => 'Types.url',
+                'type_position' => 'Types.position',
                 'entry_rank' => $query->expr(
                     '(SELECT COUNT(*) FROM listings_submissions o'
                     . ' WHERE o.listing_id = ListingsSubmissions.listing_id'
@@ -182,6 +183,7 @@ class SubmissionsTable extends Table
             'type_id' => (int)$r['type_id'],
             'type_name' => $r['type_name'],
             'type_url' => $r['type_url'],
+            'type_position' => (int)$r['type_position'],
             'rank' => (int)$r['entry_rank'],
             'total' => (int)$r['entry_total'],
         ], $rows);
