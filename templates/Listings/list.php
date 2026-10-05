@@ -313,19 +313,6 @@ document.querySelectorAll('.tb-list tbody tr').forEach(function (tr) {
     });
 });
 
-// Sticky three-row header: offset each row by the height of the rows above it.
-(function () {
-    function stick() {
-        var top = 0;
-        document.querySelectorAll('.tb-list thead tr').forEach(function (row) {
-            row.querySelectorAll('th').forEach(function (th) { th.style.top = top + 'px'; });
-            top += row.getBoundingClientRect().height;
-        });
-    }
-    stick();
-    addEventListener('resize', stick);
-})();
-
 // Toggle a system in/out of the parallel-coordinates plot from the legend.
 document.querySelectorAll('.pc-legend li').forEach(function (item) {
     function toggle() {

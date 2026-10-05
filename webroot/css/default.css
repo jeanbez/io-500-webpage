@@ -1466,11 +1466,6 @@ dd {
 .identity-system:hover{color:#d63b1e;text-decoration:underline}
 .tb-list tbody tr{cursor:pointer}
 .tb-list tbody tr:hover td{background:#f6f6f7}
-/* Header stays visible while scrolling (desktop, where the table is not clipped) */
-@media (min-width:1100px){
-    .tb-list-wrap{overflow:visible}
-    .tb-list thead th{position:sticky;background:#fff;z-index:3}
-}
 /* Phones: rank and identity stay in view while the table scrolls sideways */
 @media (max-width:760px){
     .tb-list th.tb-id,.tb-list td.tb-id{min-width:44px}
