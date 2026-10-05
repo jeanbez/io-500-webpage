@@ -9,7 +9,7 @@
                 <ul class="footer-nav" aria-label="<?php echo __('Footer') ?>">
                     <li><?php echo $this->Html->link(__('Lists'), ['controller' => 'Releases', 'action' => 'index']) ?></li>
                     <li><?php echo $this->Html->link(__('Rules'), '/rules') ?></li>
-                    <li><?php echo $this->Html->link(__('Submit'), '/pages/rules-submission') ?></li>
+                    <li><?php echo $this->Html->link(__('Submit'), 'https://www.submission.io500.org/', ['target' => '_blank', 'rel' => 'noopener']) ?></li>
                     <li><?php echo $this->Html->link(__('News'), '/news') ?></li>
                     <li><?php echo $this->Html->link(__('Contact'), '/contact') ?></li>
                 </ul>
