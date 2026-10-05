@@ -8,6 +8,7 @@
  * @var \App\View\AppView $this
  */
 $this->assign('title', 'News');
+$this->Html->css('news', ['block' => true]);
 
 $announcements = [
     ['date' => '2026-09-30', 'release' => null, 'body' => 'The '
@@ -111,7 +112,37 @@ $discussion = [
     ['date' => '2019-08-19', 'url' => 'https://review.whamcloud.com/35437/', 'title' => 'IO500 Influenced Lustre patch for IOR hard read'],
     ['date' => '2018-04-25', 'url' => 'https://review.whamcloud.com/#/c/32157/', 'title' => 'IO500 Influenced Lustre patch for mdtest stat'],
 ];
+use App\Utility\Bibtex;
+
 $bib = fn(string $file): string => (string)file_get_contents(WWW_ROOT . $file);
+$month = fn(string $date): string => date('M Y', strtotime($date));
+// Source shown next to press and talk links: the site name for known outlets, else the host.
+$source = function (string $url): string {
+    $host = preg_replace('/^www\./', '', (string)parse_url($url, PHP_URL_HOST));
+    $names = [
+        'hpcwire.com' => 'HPCwire', 'theregister.com' => 'The Register', 'theregister.co.uk' => 'The Register',
+        'nextplatform.com' => 'The Next Platform', 'insidehpc.com' => 'insideHPC', 'top500.org' => 'TOP500',
+        'youtube.com' => 'YouTube', 'storagenewsletter.com' => 'StorageNewsletter',
+    ];
+
+    return $names[$host] ?? $host;
+};
+$links = function (array $rows) use ($month, $source): string {
+    $out = '';
+    foreach ($rows as $row) {
+        $out .= '<tr><td class="d">' . $month($row['date']) . '</td>'
+            . '<td><a href="' . h($row['url']) . '" target="_blank" rel="noopener">' . h($row['title']) . '</a></td>'
+            . '<td class="src">' . h($source($row['url'])) . '</td></tr>';
+    }
+
+    return '<table class="nw-links"><tbody>' . $out . '</tbody></table>';
+};
+$tabs = [
+    'announcements' => ['bi-megaphone', __('Announcements'), null],
+    'press' => ['bi-newspaper', __('Press'), count($press)],
+    'talks' => ['bi-mic', __('Talks'), count($talks) + count($discussion)],
+    'publications' => ['bi-journal-text', __('Publications'), array_sum(array_map('count', $publications))],
+];
 ?>
 
 <div class="landing landing-news">
@@ -122,40 +153,78 @@ $bib = fn(string $file): string => (string)file_get_contents(WWW_ROOT . $file);
     </p>
 </div>
 
-<div class="content">
-    <ul class="news">
-        <?php foreach ($announcements as $item) : ?>
-            <li><span class="date"><?php echo $item['date'] ?></span> <?php echo $item['body'] ?></li>
+<div class="content nw">
+    <nav class="submissions-list-types nw-tabs" aria-label="<?php echo __('News sections') ?>">
+        <?php foreach ($tabs as $id => [$icon, $label, $count]) : ?>
+            <a class="tab<?php echo $id === 'announcements' ? ' tab-active' : '' ?>" href="#<?php echo $id ?>" data-tab="<?php echo $id ?>"><i class="bi <?php echo $icon ?>" aria-hidden="true"></i><b><?php echo $label ?></b><?php echo $count ? '<span class="nw-count">' . $count . '</span>' : '' ?></a>
         <?php endforeach; ?>
-    </ul>
+    </nav>
 
-    <?php foreach (['Press' => $press, 'Talks' => $talks] as $heading => $links) : ?>
-        <h3><?php echo $heading ?></h3>
-        <ul class="news">
-            <?php foreach ($links as $link) : ?>
-                <li><span class="date"><?php echo $link['date'] ?></span> <a class="link" href="<?php echo h($link['url']) ?>" target="_blank"><?php echo h($link['title']) ?></a></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endforeach; ?>
+    <section id="announcements" class="nw-section">
+        <?php echo $this->cell('NewsTimeline', [$announcements])->render() ?>
+    </section>
 
-    <?php foreach (['papers' => 'Publications', 'datasets' => 'Datasets', 'software' => 'Software'] as $key => $heading) : ?>
-        <h3><?php echo $heading ?></h3>
-        <ul>
+    <section id="press" class="nw-section">
+        <?php echo $links($press) ?>
+    </section>
+
+    <section id="talks" class="nw-section">
+        <?php echo $links($talks) ?>
+        <h3 class="nw-sub"><?php echo __('Other public discussion') ?></h3>
+        <?php echo $links($discussion) ?>
+    </section>
+
+    <section id="publications" class="nw-section">
+        <?php foreach (['papers' => __('Papers'), 'datasets' => __('Datasets'), 'software' => __('Software')] as $key => $heading) : ?>
+            <h3 class="nw-sub"><?php echo $heading ?></h3>
             <?php foreach ($publications[$key] as $pub) : ?>
-                <li>
-                    <h3<?php echo $pub['url'] ? ' class="doi"' : '' ?>><?php echo h($pub['title']) ?>
-                        <?php if ($pub['url']) : ?><a href="<?php echo h($pub['url']) ?>">DOI</a><?php endif; ?>
-                    </h3>
-                    <div class="code"><p class="bib"><?php echo h($bib($pub['bib'])) ?></p></div>
-                </li>
+                <?php $text = $bib($pub['bib']); $entry = Bibtex::parse($text); ?>
+                <article class="nw-pub">
+                    <p class="nw-pub-title">
+                        <?php if ($pub['url']) : ?>
+                            <a href="<?php echo h($pub['url']) ?>" target="_blank" rel="noopener"><?php echo h($pub['title']) ?></a>
+                        <?php else : ?>
+                            <?php echo h($pub['title']) ?>
+                        <?php endif; ?>
+                    </p>
+                    <?php if ($entry['authors']) : ?>
+                        <p class="nw-pub-authors"><?php echo h(implode(', ', $entry['authors'])) ?></p>
+                    <?php endif; ?>
+                    <p class="nw-pub-venue">
+                        <?php echo h(implode(', ', array_filter([$entry['venue'], $entry['year']]))) ?>
+                        <?php if ($entry['doi']) : ?>
+                            · <a href="<?php echo h($pub['url'] ?: 'https://doi.org/' . $entry['doi']) ?>" target="_blank" rel="noopener">DOI <?php echo h($entry['doi']) ?></a>
+                        <?php endif; ?>
+                    </p>
+                    <details>
+                        <summary><?php echo __('Cite (BibTeX)') ?></summary>
+                        <pre class="bib"><?php echo h(trim($text)) ?></pre>
+                    </details>
+                </article>
             <?php endforeach; ?>
-        </ul>
-    <?php endforeach; ?>
-
-    <h3>Other Public Discussion</h3>
-    <ul class="news">
-        <?php foreach ($discussion as $link) : ?>
-            <li><span class="date"><?php echo $link['date'] ?></span> <a class="link" href="<?php echo h($link['url']) ?>" target="_blank"><?php echo h($link['title']) ?></a></li>
         <?php endforeach; ?>
-    </ul>
+    </section>
 </div>
+
+<script>
+// Tabs: every section is in the page; without this script they are simply all shown.
+(function () {
+    var tabs = document.querySelectorAll('.nw-tabs [data-tab]');
+    var sections = document.querySelectorAll('.nw-section');
+    function show(id) {
+        if (!document.getElementById(id)) {
+            id = 'announcements';
+        }
+        tabs.forEach(function (t) { t.classList.toggle('tab-active', t.dataset.tab === id); });
+        sections.forEach(function (s) { s.hidden = s.id !== id; });
+    }
+    tabs.forEach(function (t) {
+        t.addEventListener('click', function (e) {
+            e.preventDefault();
+            history.replaceState(null, '', '#' + t.dataset.tab);
+            show(t.dataset.tab);
+        });
+    });
+    show(location.hash.slice(1));
+})();
+</script>
