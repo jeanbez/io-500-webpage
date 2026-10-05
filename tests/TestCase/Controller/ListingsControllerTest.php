@@ -39,5 +39,7 @@ class ListingsControllerTest extends TestCase
         $this->assertResponseOk();
         $this->assertResponseContains('ISC24');
         $this->assertResponseNotContains('Future');
+        // The home URL names no list type; the Production tab is still marked active.
+        $this->assertMatchesRegularExpression('#list/isc24/production" class="tab tab-active"#', (string)$this->_response->getBody());
     }
 }

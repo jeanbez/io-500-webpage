@@ -46,9 +46,9 @@ $hasRank = isset($rank, $listName);
 </div>
 
 <nav class="sv-tabs">
-    <a class="sv-tab<?php echo $active === 'summary' ? ' active' : '' ?>" href="<?php echo $this->Url->build(['controller' => 'submissions', 'action' => 'view', $submission->id]) ?>"><?php echo __('Summary') ?></a>
-    <a class="sv-tab<?php echo $active === 'configuration' ? ' active' : '' ?>" href="<?php echo $this->Url->build(['controller' => 'submissions', 'action' => 'configuration', $submission->id]) ?>"><?php echo __('Configuration') ?></a>
+    <a class="sv-tab<?php echo $active === 'summary' ? ' active' : '' ?>" href="<?php echo $this->Url->build(['controller' => 'submissions', 'action' => 'view', $submission->id]) ?>"><i class="bi bi-bar-chart-line" aria-hidden="true"></i><?php echo __('Summary') ?></a>
+    <a class="sv-tab<?php echo $active === 'configuration' ? ' active' : '' ?>" href="<?php echo $this->Url->build(['controller' => 'submissions', 'action' => 'configuration', $submission->id]) ?>"><i class="bi bi-sliders" aria-hidden="true"></i><?php echo __('Configuration') ?></a>
     <?php if ($questionnaire) : ?>
-        <a class="sv-tab<?php echo $active === 'reproducibility' ? ' active' : '' ?>" href="<?php echo $this->Url->build(['controller' => 'questionnaires', 'action' => 'view', $submission->id]) ?>"><?php echo __('Reproducibility') ?></a>
+        <a class="sv-tab<?php echo $active === 'reproducibility' ? ' active' : '' ?>" href="<?php echo $this->Url->build(['controller' => 'questionnaires', 'action' => 'view', $submission->id]) ?>"><i class="bi bi-patch-check" aria-hidden="true"></i><?php echo __('Reproducibility') ?></a>
     <?php endif; ?>
 </nav>

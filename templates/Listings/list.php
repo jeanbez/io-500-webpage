@@ -33,15 +33,10 @@
     <div class="submissions-list-types">
         <?php
         foreach ($release->listings as $list) {
-            $state = '';
-            if (strtolower($list->type->url) == strtolower($this->request->getParam('pass')[1])) {
-                $state = ' tab-active';
-            }
+            // Compare with the listing being shown: on the home page the URL has no type.
+            $state = $list->type->url === $type->url ? ' tab-active' : '';
 
-            $icon = '';
-            if ($list->type->ranked) {
-                $icon = '<i class="bi bi-trophy-fill"></i> ';
-            }
+            $icon = '<i class="bi ' . ($list->type->ranked ? 'bi-trophy' : 'bi-list-ul') . '" aria-hidden="true"></i> ';
 
             echo $this->Html->link($icon . '<b>' . $list->type->name . '</b>', [
                 'controller' => 'listings',
