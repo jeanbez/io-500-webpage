@@ -72,7 +72,7 @@ class SubmissionsController extends AppController
         $comparison = $selected ? [
             'listing_id' => $selected['listing_id'],
             'entries' => $this->Submissions->comparisonData($selected['listing_id']),
-            'history' => $this->Submissions->positionHistory((int)$submission->id, $selected['type_id']),
+            'history' => $this->Submissions->positionHistory((int)$submission->id, $selected['type_id'], $memberships),
         ] : null;
 
         $this->set(compact(
@@ -108,7 +108,7 @@ class SubmissionsController extends AppController
         $payload = [
             'listing_id' => $selected['listing_id'],
             'entries' => $this->Submissions->comparisonData($selected['listing_id']),
-            'history' => $this->Submissions->positionHistory((int)$id, $selected['type_id']),
+            'history' => $this->Submissions->positionHistory((int)$id, $selected['type_id'], $memberships),
         ];
         $this->autoRender = false;
 

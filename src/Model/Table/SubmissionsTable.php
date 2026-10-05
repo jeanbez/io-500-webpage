@@ -241,12 +241,13 @@ class SubmissionsTable extends Table
      *
      * @param int $submissionId Submission id.
      * @param int $typeId List type id.
+     * @param array|null $memberships listMemberships() output, when the caller already has it.
      * @return array{releases: list<string>, totals: list<int>, series: list<array<string, mixed>>}
      */
-    public function positionHistory(int $submissionId, int $typeId): array
+    public function positionHistory(int $submissionId, int $typeId, ?array $memberships = null): array
     {
         $listings = array_reverse(array_values(array_filter(
-            $this->listMemberships($submissionId),
+            $memberships ?? $this->listMemberships($submissionId),
             fn(array $m) => $m['type_id'] === $typeId,
         )));
         if (!$listings) {
