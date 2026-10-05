@@ -11,30 +11,101 @@ a {
     text-decoration: none;
 }
 
+/* Footer (templates/element/footer.php) */
 footer {
-    background: rgb(247,247,247);
-    background: linear-gradient(180deg, rgba(247,247,247,1) 0%, rgba(255,255,255,1) 75%);
-    border-top: #dadada solid 1px;
-    color: #aaa;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 50px 0;
-    margin: 50px 0 0 0;    
-}
-
-footer strong {
+    background: #f7f7f8;
+    border-top: 1px solid #e6e7ea;
+    color: #6b7079;
     font-size: 14px;
-}
-
-footer em {
-    color: #d63b1e;
-    display: inline-block;
-    font-style: normal;
-    padding: 5px 0 10px;
+    line-height: 1.6;
+    margin: 56px 0 0;
+    padding: 36px 0 28px;
 }
 
 footer a {
-    color: #aaa;
+    color: #6b7079;
+}
+
+footer a:hover {
+    color: #d63b1e;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: start;
+}
+
+.footer-org strong {
+    display: block;
+    color: #16181d;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.footer-org a,
+.footer-legal a {
+    text-decoration: underline;
+    text-decoration-color: #c4c7cc;
+    text-underline-offset: 3px;
+}
+
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 14px;
+}
+
+.footer-nav,
+.footer-social {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.footer-nav {
+    gap: 4px 18px;
+    font-weight: 500;
+}
+
+.footer-nav a {
+    color: #3a3d44;
+}
+
+.footer-social {
+    gap: 6px 20px;
+}
+
+.footer-social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.footer-social i {
+    font-size: 16px;
+}
+
+.footer-legal {
+    border-top: 1px solid #e6e7ea;
+    margin-top: 24px;
+    padding-top: 14px;
+    font-size: 12.5px;
+}
+
+@media (max-width: 760px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-right {
+        align-items: flex-start;
+    }
 }
 
 .both {
@@ -1190,37 +1261,6 @@ dd {
 
 .pc-legend-inst {
     color: #6d6d6d;
-}
-
-.footer {
-    box-sizing: border-box;
-    width: 50%;
-}
-
-footer > .container{
-    display: flex;
-}
-
-.social-links {
-    text-align: right;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.social-links li {
-    display: inline-block;
-    padding: 0 10px;
-}
-
-.social-links a {
-    color: #aaa;
-    font-size: 22px;
-    transition: color 0.2s;
-}
-
-.social-links a:hover {
-    color: #e63946;
 }
 
 .news {
