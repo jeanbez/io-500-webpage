@@ -11,7 +11,7 @@
                 <li>
                     <?php
                     echo $this->Html->link(
-                        '<i class="fa-brands fa-github"></i>',
+                        '<i class="bi bi-github"></i>',
                         'https://github.com/IO500/webpage/issues/new',
                         [
                             'escape' => false,
@@ -25,7 +25,7 @@
                 <li>
                     <?php
                     echo $this->Html->link(
-                        '<i class="fa-solid fa-envelope"></i>',
+                        '<i class="bi bi-envelope-fill"></i>',
                         'http://lists.io500.org/listinfo.cgi/io500-io500.org',
                         [
                             'escape' => false,
@@ -39,7 +39,7 @@
                 <li>
                     <?php
                     echo $this->Html->link(
-                        '<i class="fa-brands fa-slack"></i>',
+                        '<i class="bi bi-slack"></i>',
                         'https://join.slack.com/t/io500workspace/shared_invite/zt-hv1i5svr-Yj8HR_wRzEy1bK2s2JX20w',
                         [
                             'escape' => false,

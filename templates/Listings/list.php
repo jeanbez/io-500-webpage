@@ -40,7 +40,7 @@
 
             $icon = '';
             if ($list->type->ranked) {
-                $icon = '<i class="fa-solid fa-trophy"></i> ';
+                $icon = '<i class="bi bi-trophy-fill"></i> ';
             }
 
             echo $this->Html->link($icon . '<b>' . $list->type->name . '</b>', [
