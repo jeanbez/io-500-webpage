@@ -89,8 +89,8 @@ class ListingsController extends AppController
             'limit' => $limit,
         ];
 
-        if (isset($this->request->getParam('?')['sort'])) {
-            $settings['sortableFields'][] = $this->request->getParam('?')['sort'];
+        if ($this->request->getQuery('sort') !== null) {
+            $settings['sortableFields'][] = $this->request->getQuery('sort');
         }
 
         $submissions = $this->Listings->ListingsSubmissions->find('all')
@@ -257,8 +257,8 @@ class ListingsController extends AppController
             ])
             ->first();
 
-        if (isset($this->request->getParam('?')['sort'])) {
-            $settings['sortableFields'][] = $this->request->getParam('?')['sort'];
+        if ($this->request->getQuery('sort') !== null) {
+            $settings['sortableFields'][] = $this->request->getQuery('sort');
         }
 
         $submissions = $this->Listings->ListingsSubmissions->find('all')
