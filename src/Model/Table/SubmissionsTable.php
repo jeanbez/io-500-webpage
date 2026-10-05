@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -80,7 +81,7 @@ class SubmissionsTable extends Table
      * @param \Cake\Datasource\EntityInterface $submission The submission.
      * @return array|null compact('score', 'rank', 'listTotal', 'listName'), or null when unranked.
      */
-    public function rankingHeader(\Cake\Datasource\EntityInterface $submission): ?array
+    public function rankingHeader(EntityInterface $submission): ?array
     {
         $score = $this->ListingsSubmissions->find()
             ->contain([
@@ -104,8 +105,18 @@ class SubmissionsTable extends Table
             return null;
         }
 
+        // Compare against the stored score in SQL. Binding $score->score from PHP
+        // rounds the FLOAT column to 14 digits, so the entry would count itself.
+        // Ties are ordered by entry id, as on the list page.
+        $own = $this->ListingsSubmissions->find()
+            ->select(['score'])
+            ->where(['id' => $score->id]);
         $rank = $this->ListingsSubmissions->find()
-            ->where(['listing_id' => $score->listing_id, 'score >' => $score->score])
+            ->where(['listing_id' => $score->listing_id])
+            ->where(['OR' => [
+                'score >' => $own,
+                'AND' => ['score' => $own, 'id <' => $score->id],
+            ]])
             ->count() + 1;
         $listTotal = $this->ListingsSubmissions->find()
             ->where(['listing_id' => $score->listing_id])

@@ -80,8 +80,11 @@ class ListingsController extends AppController
             ->first();
 
         $settings = [
+            // Entry id breaks score ties, so the order (and the rank shown) is stable
+            // and matches SubmissionsTable::rankingHeader().
             'order' => [
                 'score' => 'DESC',
+                'ListingsSubmissions.id' => 'ASC',
             ],
             'limit' => $limit,
         ];
