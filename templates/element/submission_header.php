@@ -12,8 +12,10 @@
 $squash = fn($v) => trim((string)preg_replace('/\s+/', ' ', (string)$v));
 $repro = ($questionnaire && $questionnaire->reproducibility_score)
     ? $questionnaire->reproducibility_score->name : null;
-$storage = $squash($submission->information_storage_vendor . ' '
-    . ($submission->information_filesystem_name ?: $submission->information_filesystem_type));
+$vendor = $squash($submission->information_storage_vendor);
+$fsName = $squash($submission->information_filesystem_name ?: $submission->information_filesystem_type);
+// Some file-system names already start with the vendor ("Huawei OceanStor Pacific").
+$storage = $vendor !== '' && stripos($fsName, $vendor) === 0 ? $fsName : trim($vendor . ' ' . $fsName);
 $lede = array_filter([h($squash($submission->information_institution)), h($storage)]);
 if ($repro) {
     $lede[] = '<span class="sv-repro"><span class="badge badge-' . (int)$questionnaire->reproducibility_score_id

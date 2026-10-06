@@ -83,6 +83,8 @@ class SubmissionsControllerTest extends TestCase
         $this->get('/submissions/view/7');
         $this->assertResponseOk();
         $this->assertResponseNotContains('Submitted');
+        // The file-system name already starts with the vendor: not repeated in the header.
+        $this->assertResponseContains('Inst G · Vendor 7 Store');
     }
 
     /**

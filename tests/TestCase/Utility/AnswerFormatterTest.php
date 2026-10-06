@@ -56,4 +56,15 @@ class AnswerFormatterTest extends TestCase
         $this->assertStringNotContainsString('<p><br', $html);
         $this->assertStringNotContainsString('&nbsp;', $html);
     }
+
+    /**
+     * Word-style answers start paragraphs with a non-breaking space or hold nothing else.
+     */
+    public function testTrimsNonBreakingSpaces(): void
+    {
+        $html = AnswerFormatter::toHtml('<p><span lang="EN-US">&nbsp;</span><span lang="EN-US">OceanFS2 is new.</span></p>'
+            . '<p><span>&nbsp;</span></p><p>&nbsp; &nbsp;</p><p>Last.</p>');
+
+        $this->assertSame('<p>OceanFS2 is new.</p><p>Last.</p>', str_replace("\n", '', $html));
+    }
 }

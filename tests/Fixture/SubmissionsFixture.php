@@ -62,6 +62,8 @@ class SubmissionsFixture extends TestFixture
                 'information_institution' => $institution,
                 'information_storage_vendor' => 'Vendor ' . $id,
                 'information_filesystem_type' => $fs,
+                // Submission 7's file-system name repeats its vendor, as some real ones do.
+                'information_filesystem_name' => $id === 7 ? 'Vendor 7 Store' : null,
                 'information_client_nodes' => 10 * $id,
                 'information_client_total_procs' => 160 * $id,
                 // Submission 7 has no date, as some older submissions do.

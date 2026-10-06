@@ -35,8 +35,12 @@ class AnswerFormatter
 
         $html = self::purifier()->purify($answer);
 
-        // Paragraphs holding only line breaks or spaces are editor leftovers.
-        return trim((string)preg_replace('#<p>(?:\s|&nbsp;|<br\s*/?>)*</p>#', '', $html));
+        // Editor leftovers: paragraphs holding only spaces or line breaks, and the
+        // non-breaking spaces Word-style editors put at the start of a paragraph.
+        $html = (string)preg_replace('#<p>(?:\s|\x{00A0}|&nbsp;|<br\s*/?>)*</p>#u', '', $html);
+        $html = (string)preg_replace('#<p>(?:\s|\x{00A0}|&nbsp;)+#u', '<p>', $html);
+
+        return trim($html);
     }
 
     /**
