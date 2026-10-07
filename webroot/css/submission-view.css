@@ -81,10 +81,8 @@
 .sp-level{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:6px;padding:16px 20px;margin:26px 0 8px}
 .sp-level .badge{width:28px;height:28px;background-size:28px;flex:none;margin:2px 0 0}
 .sp-level b{font-size:16px;color:var(--ink)}
-.sp-level p{margin:4px 0 0;font-size:14px;color:var(--mute);line-height:1.55}
-.sp-levels{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;padding:0;list-style:none;font-size:12px;color:var(--mute)}
-.sp-levels li{padding:2px 8px;border:1px solid var(--line);border-radius:3px}
-.sp-levels li.on{border-color:#d63b1e;color:#d63b1e;font-weight:600}
+.sp-level p{margin:4px 0 0;font-size:14px;line-height:1.55}
+.sp-level p a{color:#c8102e}
 .sp-toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;margin:18px 0 6px}
 .sp-toc a{color:#3a3d44;font-weight:500}
 .sp-toc a:hover{color:#d63b1e}

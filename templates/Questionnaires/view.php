@@ -6,7 +6,6 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Submission $submission
  * @var \App\Model\Entity\Questionnaire $questionnaire
- * @var iterable<\App\Model\Entity\ReproducibilityScore> $levels
  */
 use App\Utility\AnswerFormatter;
 
@@ -161,7 +160,6 @@ HTML,
     ],
 ];
 $level = $questionnaire->reproducibility_score;
-$label = fn($name) => ucfirst(strtolower((string)$name));
 ?>
 <div class="subview sp">
 
@@ -171,13 +169,13 @@ $label = fn($name) => ucfirst(strtolower((string)$name));
         <div class="sp-level">
             <span class="badge badge-<?php echo (int)$level->id ?>" aria-hidden="true"></span>
             <div>
-                <b><?php echo h($label($level->name)) ?></b>
-                <p><?php echo h(trim(strip_tags((string)$level->description))) ?></p>
-                <ol class="sp-levels" aria-label="<?php echo __('Reproducibility levels, lowest first') ?>">
-                    <?php foreach ($levels as $l) : ?>
-                        <li<?php echo $l->id === $level->id ? ' class="on" aria-current="true"' : '' ?>><?php echo h($label($l->name)) ?></li>
-                    <?php endforeach; ?>
-                </ol>
+                <b><?php echo h($level->name) ?></b>
+                <p>
+                    <?php echo $this->Html->link(
+                        __('How the reproducibility levels are defined'),
+                        ['controller' => 'Pages', 'action' => 'display', 'the-lists', '#' => 'reproducibility-scores'],
+                    ) ?>
+                </p>
             </div>
         </div>
     <?php endif; ?>

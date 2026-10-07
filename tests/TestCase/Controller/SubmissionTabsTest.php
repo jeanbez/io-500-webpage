@@ -35,7 +35,10 @@ class SubmissionTabsTest extends TestCase
         $this->get('/questionnaires/view/6');
         $this->assertResponseOk();
         $this->assertResponseContains('General academic research.');
-        $this->assertResponseContains('Fully reproducible');
+        $this->assertResponseContains('<b>Fully Reproducible</b>');
+        // The level links to its definition on The Lists page instead of repeating it.
+        $this->assertResponseContains('the-lists#reproducibility-scores');
+        $this->assertResponseNotContains('The highest level.');
         // Answers are cleaned: no scripts or event handlers from the submitter.
         $this->assertResponseNotContains('alert("x")');
         $this->assertResponseNotContains('steal()');

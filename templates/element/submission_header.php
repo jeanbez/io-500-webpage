@@ -19,7 +19,7 @@ $storage = $vendor !== '' && stripos($fsName, $vendor) === 0 ? $fsName : trim($v
 $lede = array_filter([h($squash($submission->information_institution)), h($storage)]);
 if ($repro) {
     $lede[] = '<span class="sv-repro"><span class="badge badge-' . (int)$questionnaire->reproducibility_score_id
-        . '" aria-hidden="true"></span>' . h(ucfirst(strtolower($repro))) . '</span>';
+        . '" aria-hidden="true"></span>' . h($repro) . '</span>';
 }
 ?>
 <header class="sv-head">
