@@ -74,22 +74,17 @@ class SubmissionsTable extends Table
     }
 
     /**
-     * Resolve the header ranking context for a submission: its best-scoring
-     * released listing, the rank within that list, the list size and its name.
-     * Shared by the Summary, Configuration and Reproducibility views.
+     * The submission's best-scoring entry on a released list, or null when it is on
+     * no released list (the Summary, Configuration and Reproducibility tabs then
+     * redirect). Its score is the one the summary shows.
      *
      * @param \Cake\Datasource\EntityInterface $submission The submission.
-     * @return array|null compact('score', 'rank', 'listTotal', 'listName'), or null when unranked.
+     * @return \Cake\Datasource\EntityInterface|null The listings_submissions entry.
      */
-    public function rankingHeader(EntityInterface $submission): ?array
+    public function bestListing(EntityInterface $submission): ?EntityInterface
     {
-        $score = $this->ListingsSubmissions->find()
-            ->contain([
-                'Listings' => [
-                    'Releases',
-                    'Types',
-                ],
-            ])
+        return $this->ListingsSubmissions->find()
+            ->contain(['Listings' => ['Releases']])
             ->where([
                 'ListingsSubmissions.submission_id' => $submission->id,
                 'Releases.release_date <=' => date('Y-m-d'),
@@ -100,31 +95,6 @@ class SubmissionsTable extends Table
                 'Releases.release_date' => 'DESC',
             ])
             ->first();
-
-        if (empty($score)) {
-            return null;
-        }
-
-        // Compare against the stored score in SQL. Binding $score->score from PHP
-        // rounds the FLOAT column to 14 digits, so the entry would count itself.
-        // Ties are ordered by entry id, as on the list page. Entry ids are only
-        // unique within a listing (the view unions one table per list).
-        $own = $this->ListingsSubmissions->find()
-            ->select(['score'])
-            ->where(['listing_id' => $score->listing_id, 'id' => $score->id]);
-        $rank = $this->ListingsSubmissions->find()
-            ->where(['listing_id' => $score->listing_id])
-            ->where(['OR' => [
-                'score >' => $own,
-                'AND' => ['score' => $own, 'id <' => $score->id],
-            ]])
-            ->count() + 1;
-        $listTotal = $this->ListingsSubmissions->find()
-            ->where(['listing_id' => $score->listing_id])
-            ->count();
-        $listName = strtoupper($score->listing->release->acronym) . ' ' . $score->listing->type->name;
-
-        return compact('score', 'rank', 'listTotal', 'listName');
     }
 
     /**
@@ -139,7 +109,8 @@ class SubmissionsTable extends Table
 
     /**
      * Every released, ranked list a submission is on, newest release first, with its
-     * rank and entry count. Ranks are computed in SQL (see rankingHeader() for why):
+     * rank and entry count. Ranks are computed in SQL, comparing stored scores directly
+     * (binding a FLOAT score from PHP rounds it to 14 digits and miscounts):
      * entries scoring higher, plus equal scores with a lower entry id.
      *
      * @param int $submissionId Submission id.

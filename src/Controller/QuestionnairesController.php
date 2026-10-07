@@ -23,7 +23,7 @@ class QuestionnairesController extends AppController
         $submission = $this->Questionnaires->Submissions->get($this->idFromUrl($submission_id), contain: ['Releases', 'Questionnaires']);
 
         // Same gate as the summary: only submissions on a released list are shown.
-        if (!$this->Questionnaires->Submissions->rankingHeader($submission)) {
+        if (!$this->Questionnaires->Submissions->bestListing($submission)) {
             $this->Flash->error(__('This submission is not yet available.'));
 
             return $this->redirect('/');

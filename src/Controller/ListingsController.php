@@ -118,7 +118,7 @@ class ListingsController extends AppController
 
         $settings = [
             // Entry id breaks score ties, so the order (and the rank shown) is stable
-            // and matches SubmissionsTable::rankingHeader().
+            // and matches the ranks on the submission pages (SubmissionsTable::listMemberships()).
             'order' => [
                 'score' => 'DESC',
                 'ListingsSubmissions.id' => 'ASC',

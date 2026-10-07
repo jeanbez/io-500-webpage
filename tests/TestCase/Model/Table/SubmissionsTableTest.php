@@ -28,30 +28,40 @@ class SubmissionsTableTest extends TestCase
      * A FLOAT list score (797.038025 is stored as 797.0380249023438) must not count
      * itself as "higher" when PHP rounds it to 14 digits: five entries are above it.
      */
-    public function testRankingHeaderDoesNotCountItselfForFloatScores(): void
+    public function testRankDoesNotCountItselfForFloatScores(): void
     {
-        $header = $this->Submissions->rankingHeader($this->Submissions->get(6));
+        $isc24 = array_column($this->Submissions->listMemberships(6), null, 'listing_id')[4];
 
-        $this->assertSame('ISC24 Production', $header['listName']);
-        $this->assertSame(6, $header['rank']);
-        $this->assertSame(9, $header['listTotal']);
+        $this->assertSame(6, $isc24['rank']);
+        $this->assertSame(9, $isc24['total']);
     }
 
     /**
      * Equal scores are ranked by list entry id, the same order the list page uses.
      */
-    public function testRankingHeaderBreaksTiesByEntryId(): void
+    public function testRankBreaksTiesByEntryId(): void
     {
-        $this->assertSame(8, $this->Submissions->rankingHeader($this->Submissions->get(8))['rank']);
-        $this->assertSame(9, $this->Submissions->rankingHeader($this->Submissions->get(9))['rank']);
+        $rank = fn(int $submission, int $listing) => array_column(
+            $this->Submissions->listMemberships($submission),
+            'rank',
+            'listing_id',
+        )[$listing];
+
+        $this->assertSame(8, $rank(8, 4));
+        $this->assertSame(9, $rank(9, 4));
+        // SC23 Research: same score, entry 1 (submission 9) before entry 2 (submission 8).
+        $this->assertSame(1, $rank(9, 2));
+        $this->assertSame(2, $rank(8, 2));
     }
 
     /**
-     * Lists of a release that is not out yet are ignored.
+     * The best released entry gates the tabs: none for a submission only on lists of an
+     * unreleased release; the latest Production list otherwise (type id, then date, on ties).
      */
-    public function testRankingHeaderIgnoresUnreleasedLists(): void
+    public function testBestListing(): void
     {
-        $this->assertNull($this->Submissions->rankingHeader($this->Submissions->get(10)));
+        $this->assertNull($this->Submissions->bestListing($this->Submissions->get(10)));
+        $this->assertSame(4, $this->Submissions->bestListing($this->Submissions->get(6))->listing_id);
     }
 
     /**

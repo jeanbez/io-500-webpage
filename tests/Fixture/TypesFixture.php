@@ -7,7 +7,7 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * Two ranked list types and the unranked Full list, with the ids they have in the real
- * database (Production 15, Research 1, Full 3), which rankingHeader() relies on for ties.
+ * database (Production 15, Research 1, Full 3), which SubmissionsTable::bestListing() relies on for ties.
  */
 class TypesFixture extends TestFixture
 {

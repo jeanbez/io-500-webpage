@@ -47,15 +47,15 @@ class SubmissionsController extends AppController
 
         // The submission's best released list: gates unreleased submissions and gives
         // the score shown, as stored on the list (D2 in tasks/todo-submission-view.md).
-        $header = $this->Submissions->rankingHeader($submission);
+        $best = $this->Submissions->bestListing($submission);
 
-        if (empty($header)) {
+        if (!$best) {
             $this->Flash->error(__('This submission is not yet available.'));
 
             return $this->redirect('/');
         }
 
-        $submission->io500_score = $header['score']->score;
+        $submission->io500_score = $best->score;
 
         $questionnaire = $this->Submissions->Questionnaires->find('all')
             ->contain(['ReproducibilityScores'])
@@ -160,7 +160,7 @@ class SubmissionsController extends AppController
         $submission = $this->Submissions->get($this->idFromUrl($id), contain: ['Releases']);
 
         // Same gate as view(): only submissions on a released list are shown.
-        if (!$this->Submissions->rankingHeader($submission)) {
+        if (!$this->Submissions->bestListing($submission)) {
             $this->Flash->error(__('This submission is not yet available.'));
 
             return $this->redirect('/');
