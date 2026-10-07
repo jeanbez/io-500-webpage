@@ -510,6 +510,11 @@ nav .links > li > a {
     justify-content: center;
 }
 
+/* Error pages: message, then the illustration */
+.error-page{text-align:center;margin:20px 0 0}
+.error-page h1{font-size:28px;margin:0 0 8px}
+.error-page p{color:#6b7079;margin:0 0 16px}
+
 #error-404 {
     background-image: url('../img/404.svg');
     background-size: 600px;
