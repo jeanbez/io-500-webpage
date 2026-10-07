@@ -74,6 +74,11 @@ if (
     exit(1);
 }
 
+// Let PHPUnit handle PHP errors and deprecations: it only installs its own handler
+// when none is set, and the app's ErrorTrap (config/bootstrap.php) would otherwise
+// just print them. With failOnDeprecation in phpunit.xml.dist they fail the run.
+restore_error_handler();
+
 // Tests must not read or write tmp/cache, which the web server also owns.
 Cache::disable();
 

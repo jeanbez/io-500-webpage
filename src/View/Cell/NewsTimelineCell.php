@@ -18,7 +18,7 @@ class NewsTimelineCell extends Cell
      */
     public function display(array $announcements): void
     {
-        $written = array_filter(array_map('strtoupper', array_column($announcements, 'release')));
+        $written = array_map('strtoupper', array_filter(array_column($announcements, 'release')));
 
         $releases = $this->fetchTable('Releases')->find()
             ->where(['release_date <=' => date('Y-m-d')])
