@@ -673,8 +673,7 @@ table {
 }
 
 .rank-1, .rank-2, .rank-3 {
-    /* Dark numbers: white on the gold/silver/bronze medals was too faint */
-    color: #16181d;
+    color: #fff;
     font-size: 12px;
     font-weight: bold;
     width: 23px;
