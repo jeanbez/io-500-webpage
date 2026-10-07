@@ -180,11 +180,6 @@ $level = $questionnaire->reproducibility_score;
         </div>
     <?php endif; ?>
 
-    <nav class="sp-toc" aria-label="<?php echo __('Questions') ?>">
-        <?php foreach ($sections as $section) : ?>
-            <a href="#<?php echo $section['field'] ?>"><?php echo h($section['title']) ?></a>
-        <?php endforeach; ?>
-    </nav>
 
     <?php foreach ($sections as $section) : ?>
         <section class="sp-answer" id="<?php echo $section['field'] ?>">

@@ -83,9 +83,6 @@
 .sp-level b{font-size:16px;color:var(--ink)}
 .sp-level p{margin:4px 0 0;font-size:14px;line-height:1.55}
 .sp-level p a{color:#c8102e}
-.sp-toc{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;margin:18px 0 6px}
-.sp-toc a{color:#3a3d44;font-weight:500}
-.sp-toc a:hover{color:#d63b1e}
 .sp-answer h2{margin:34px 0 4px;scroll-margin-top:12px}
 .sp-answer details{margin:0 0 10px}
 .sp-answer summary{cursor:pointer;font-size:13px;color:var(--mute);list-style:none}
