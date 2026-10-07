@@ -54,4 +54,39 @@ class ListingsControllerTest extends TestCase
         $this->assertResponseOk();
         $this->assertResponseContains('Kappa');
     }
+
+    /**
+     * Only the columns the table header sorts on are accepted; anything else (SQL,
+     * private columns, arrays) is ignored and the list keeps its ranked order.
+     */
+    public function testSortAcceptsOnlyListedColumns(): void
+    {
+        $ranked = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Shaheen-like', 'Eta', 'Theta', 'Iota'];
+
+        $this->get('/list/isc24/production?sort=information_system&direction=asc');
+        $this->assertResponseOk();
+        $alphabetical = $ranked;
+        sort($alphabetical);
+        $this->assertSame($alphabetical, $this->systems());
+
+        foreach (['RAND()', 'Submissions.information_submitter', 'information_submitter', '(SELECT 1)'] as $sort) {
+            $this->get('/list/isc24/production?sort=' . urlencode($sort) . '&direction=asc');
+            $this->assertResponseOk();
+            $this->assertSame($ranked, $this->systems(), $sort);
+        }
+
+        $this->get('/list/isc24/production?sort[]=x');
+        $this->assertResponseOk();
+        $this->assertSame($ranked, $this->systems());
+    }
+
+    /**
+     * @return list<string> System names in the order the list shows them.
+     */
+    private function systems(): array
+    {
+        preg_match_all('#class="identity-system">([^<]+)<#', (string)$this->_response->getBody(), $m);
+
+        return $m[1];
+    }
 }

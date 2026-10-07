@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Model\Table\SubmissionsTable;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 
@@ -17,6 +18,42 @@ use Cake\Http\Response;
  */
 class ListingsController extends AppController
 {
+    /**
+     * Columns a list can be sorted by: the ones the table header links to. Anything
+     * else in ?sort= is ignored (it reaches ORDER BY, and could also expose private
+     * columns through their ordering).
+     */
+    private const SORTABLE_FIELDS = [
+        'score',
+        'information_institution',
+        'information_system',
+        'information_filesystem_type',
+        'information_storage_vendor',
+        'information_client_nodes',
+        'information_client_total_procs',
+        'io500_bw',
+        'io500_md',
+    ];
+
+    /**
+     * Drop non-string sort parameters (e.g. ?sort[]=x), which make the paginator fail.
+     *
+     * @param \Cake\Event\EventInterface $event The event.
+     * @return void
+     */
+    public function beforeFilter(EventInterface $event): void
+    {
+        parent::beforeFilter($event);
+
+        $query = $this->request->getQueryParams();
+        foreach (['sort', 'direction'] as $key) {
+            if (isset($query[$key]) && !is_string($query[$key])) {
+                unset($query[$key]);
+            }
+        }
+        $this->request = $this->request->withQueryParams($query);
+    }
+
     /**
      * List method
      *
@@ -89,9 +126,7 @@ class ListingsController extends AppController
             'limit' => $limit,
         ];
 
-        if ($this->request->getQuery('sort') !== null) {
-            $settings['sortableFields'][] = $this->request->getQuery('sort');
-        }
+        $settings['sortableFields'] = self::SORTABLE_FIELDS;
 
         $submissions = $this->Listings->ListingsSubmissions->find('all')
             ->contain([
@@ -257,9 +292,7 @@ class ListingsController extends AppController
             ])
             ->first();
 
-        if ($this->request->getQuery('sort') !== null) {
-            $settings['sortableFields'][] = $this->request->getQuery('sort');
-        }
+        $settings['sortableFields'] = self::SORTABLE_FIELDS;
 
         $submissions = $this->Listings->ListingsSubmissions->find('all')
             ->contain([
