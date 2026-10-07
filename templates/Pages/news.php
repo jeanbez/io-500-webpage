@@ -226,5 +226,7 @@ $tabs = [
         });
     });
     show(location.hash.slice(1));
+    // Back/forward and links to #press etc. on this page.
+    addEventListener('hashchange', function () { show(location.hash.slice(1)); });
 })();
 </script>
