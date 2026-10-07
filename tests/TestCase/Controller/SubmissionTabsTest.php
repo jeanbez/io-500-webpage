@@ -62,12 +62,13 @@ class SubmissionTabsTest extends TestCase
      */
     public function testInvalidIdsAreNotFound(): void
     {
-        foreach ([
+        $urls = [
             '/submissions/view/abc', '/submissions/view', '/submissions/view/999',
             '/submissions/configuration/abc', '/submissions/configuration',
             '/questionnaires/view/abc', '/questionnaires/view',
             '/submissions/compare/abc/4',
-        ] as $url) {
+        ];
+        foreach ($urls as $url) {
             $this->get($url);
             $this->assertResponseCode(404, $url);
         }
