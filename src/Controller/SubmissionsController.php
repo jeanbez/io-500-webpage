@@ -43,7 +43,7 @@ class SubmissionsController extends AppController
      */
     public function view(?string $id = null)
     {
-        $submission = $this->Submissions->get($id, contain: ['Releases']);
+        $submission = $this->Submissions->get($this->idFromUrl($id), contain: ['Releases']);
 
         // The submission's best released list: gates unreleased submissions and gives
         // the score shown, as stored on the list (D2 in tasks/todo-submission-view.md).
@@ -89,17 +89,19 @@ class SubmissionsController extends AppController
      * page when another list is selected. 404 for any other listing (unreleased,
      * unranked, or not containing this submission).
      *
-     * @param string $id Submission id.
-     * @param string $listingId Listing id.
+     * @param string|null $id Submission id.
+     * @param string|null $listingId Listing id.
      * @return \Cake\Http\Response
      * @throws \Cake\Http\Exception\NotFoundException
      */
-    public function compare(string $id, string $listingId): Response
+    public function compare(?string $id = null, ?string $listingId = null): Response
     {
-        $memberships = $this->Submissions->listMemberships((int)$id);
+        $id = $this->idFromUrl($id);
+        $listingId = $this->idFromUrl($listingId);
+        $memberships = $this->Submissions->listMemberships($id);
         $selected = current(array_filter(
             $memberships,
-            fn(array $m) => $m['listing_id'] === (int)$listingId,
+            fn(array $m) => $m['listing_id'] === $listingId,
         ));
         if (!$selected) {
             throw new NotFoundException();
@@ -108,7 +110,7 @@ class SubmissionsController extends AppController
         $payload = [
             'listing_id' => $selected['listing_id'],
             'entries' => $this->Submissions->comparisonData($selected['listing_id']),
-            'history' => $this->Submissions->positionHistory((int)$id, $selected['type_id'], $memberships),
+            'history' => $this->Submissions->positionHistory($id, $selected['type_id'], $memberships),
         ];
         $this->autoRender = false;
 
@@ -155,7 +157,7 @@ class SubmissionsController extends AppController
      */
     public function configuration(?string $id = null)
     {
-        $submission = $this->Submissions->get($id, contain: ['Releases']);
+        $submission = $this->Submissions->get($this->idFromUrl($id), contain: ['Releases']);
 
         // Same gate as view(): only submissions on a released list are shown.
         if (!$this->Submissions->rankingHeader($submission)) {

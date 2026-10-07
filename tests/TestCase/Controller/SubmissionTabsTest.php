@@ -56,4 +56,20 @@ class SubmissionTabsTest extends TestCase
         $this->get('/questionnaires/view/10');
         $this->assertRedirect('/');
     }
+
+    /**
+     * Missing or non-numeric ids are "not found", not server errors.
+     */
+    public function testInvalidIdsAreNotFound(): void
+    {
+        foreach ([
+            '/submissions/view/abc', '/submissions/view', '/submissions/view/999',
+            '/submissions/configuration/abc', '/submissions/configuration',
+            '/questionnaires/view/abc', '/questionnaires/view',
+            '/submissions/compare/abc/4',
+        ] as $url) {
+            $this->get($url);
+            $this->assertResponseCode(404, $url);
+        }
+    }
 }
