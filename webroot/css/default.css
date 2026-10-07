@@ -679,7 +679,8 @@ table {
 }
 
 .rank-1, .rank-2, .rank-3 {
-    color: #fff;
+    /* Dark numbers: white on the gold/silver/bronze medals was too faint */
+    color: #16181d;
     font-size: 12px;
     font-weight: bold;
     width: 23px;
@@ -704,7 +705,7 @@ table {
 }
 
 .identity-meta {
-    color: #7b7d82;
+    color: #6b7079;
     display: block;
     font-size: 12px;
     margin-top: 3px;
@@ -1471,7 +1472,7 @@ dd {
 /* Units keep their real case: GiB/s, kIOP/s */
 .tb-list thead tr:nth-child(3) th{text-transform:none}
 /* Lighter group labels; Score is the column the list is ranked by */
-.tb-list thead tr:first-child th[colspan]{font-weight:500;color:#9aa0a8;font-size:11px;letter-spacing:.08em}
+.tb-list thead tr:first-child th[colspan]{font-weight:500;color:#6b7079;font-size:11px;letter-spacing:.08em}
 .tb-list thead th.tb-score a{color:#16181d;font-weight:700}
 /* The system name also links to the submission; the whole row is clickable */
 .identity-system{color:inherit}
