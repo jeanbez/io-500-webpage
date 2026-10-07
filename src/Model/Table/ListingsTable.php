@@ -144,7 +144,9 @@ class ListingsTable extends Table
                 'url' => $listing->type->url,
                 'submission_id' => (int)$top->submission_id,
                 'system' => trim((string)preg_replace('/\s+/', ' ', (string)$top->submission->information_system)),
-                'institution' => trim((string)preg_replace('/\s+/', ' ', (string)$top->submission->information_institution)),
+                'institution' => trim(
+                    (string)preg_replace('/\s+/', ' ', (string)$top->submission->information_institution),
+                ),
                 'score' => (float)$top->score,
             ];
         }

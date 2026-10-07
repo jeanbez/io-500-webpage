@@ -154,8 +154,9 @@ class RecordsController extends AppController
             foreach ($submissions as $submission) {
                 // We need to set all the variables available for calculation
                 foreach ($columns as $key => $column) {
-                    if (is_numeric($submission->submission->{$column}) || is_string($submission->submission->{$column})) {
-                        $executor->setVar($column, $submission->submission->{$column});
+                    $value = $submission->submission->{$column};
+                    if (is_numeric($value) || is_string($value)) {
+                        $executor->setVar($column, $value);
                     }
                 }
 
@@ -184,7 +185,9 @@ class RecordsController extends AppController
 
         if ($display['custom-remove']) {
             foreach ($submissions as $id => $submission) {
-                $key = md5($submission['submission']['information_system'] . $submission['submission']['information_institution'] . $submission['submission']['information_filesystem_type']);
+                $key = md5($submission['submission']['information_system']
+                    . $submission['submission']['information_institution']
+                    . $submission['submission']['information_filesystem_type']);
 
                 if (in_array($key, $unique)) {
                     unset($submissions[$id]);

@@ -329,8 +329,9 @@ class SubmissionsController extends AppController
                 foreach ($submissions as $submission) {
                     // We need to set all the variables available for calculation
                     foreach ($columns as $key => $column) {
-                        if (is_numeric($submission->submission->{$column}) || is_string($submission->submission->{$column})) {
-                            $executor->setVar($column, $submission->submission->{$column});
+                        $value = $submission->submission->{$column};
+                        if (is_numeric($value) || is_string($value)) {
+                            $executor->setVar($column, $value);
                         }
                     }
 
@@ -339,31 +340,48 @@ class SubmissionsController extends AppController
                     } catch (IncorrectExpressionException $e) {
                         $valid = false;
 
-                        $this->Flash->error(__('Sorry, but the expression is invalid! Please, make sure that your are using the correct syntax.'));
+                        $this->Flash->error(__(
+                            'Sorry, but the expression is invalid! '
+                            . 'Please, make sure that your are using the correct syntax.',
+                        ));
 
                         break;
                     } catch (IncorrectBracketsException $e) {
                         $valid = false;
 
-                        $this->Flash->error(__('Sorry, but there are incorrect brackets! Please, make sure that your are using the correct syntax.'));
+                        $this->Flash->error(__(
+                            'Sorry, but there are incorrect brackets! '
+                            . 'Please, make sure that your are using the correct syntax.',
+                        ));
 
                         break;
                     } catch (UnknownOperatorException $e) {
                         $valid = false;
 
-                        $this->Flash->error(__('Sorry, but the operator "{0}" is unknown! Please, make sure that your are using the correct syntax.', $e->getMessage()));
+                        $this->Flash->error(__(
+                            'Sorry, but the operator "{0}" is unknown! '
+                            . 'Please, make sure that your are using the correct syntax.',
+                            $e->getMessage(),
+                        ));
 
                         break;
                     } catch (UnknownVariableException $e) {
                         $valid = false;
 
-                        $this->Flash->error(__('Sorry, but the variable "{0}" is unknown! Please, make sure that your are using the variable names.', $e->getMessage()));
+                        $this->Flash->error(__(
+                            'Sorry, but the variable "{0}" is unknown! '
+                            . 'Please, make sure that your are using the variable names.',
+                            $e->getMessage(),
+                        ));
 
                         break;
                     } catch (Exception $e) {
                         $valid = false;
 
-                        $this->Flash->error(__('Sorry, but there was an error when creating the custom list! Please, make sure you are using the correct variables and syntax.'));
+                        $this->Flash->error(__(
+                            'Sorry, but there was an error when creating the custom list! '
+                            . 'Please, make sure you are using the correct variables and syntax.',
+                        ));
 
                         break;
                     }
@@ -424,7 +442,9 @@ class SubmissionsController extends AppController
 
         if (isset($selected_to_display) && $selected_to_display['custom-remove']) {
             foreach ($submissions as $id => $submission) {
-                $key = md5($submission['submission']['information_system'] . $submission['submission']['information_institution'] . $submission['submission']['information_filesystem_type']);
+                $key = md5($submission['submission']['information_system']
+                    . $submission['submission']['information_institution']
+                    . $submission['submission']['information_filesystem_type']);
 
                 if (in_array($key, $unique)) {
                     unset($submissions[$id]);
